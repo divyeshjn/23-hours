@@ -8,6 +8,8 @@ import NutritionSettings from "./components/NutritionSettings";
 function Settings() {
   const {
     settings,
+    saving,
+    error,
     updateTargets,
     addHabit,
     updateHabit,
@@ -23,9 +25,19 @@ function Settings() {
 
       <div className="flex flex-col gap-6">
 
+        {error && (
+          <p
+            role="alert"
+            className="text-sm text-red-600 bg-red-50 rounded-xl p-3"
+          >
+            {error}
+          </p>
+        )}
+
         <NutritionSettings
           targets={settings.targets}
           onSave={updateTargets}
+          saving={saving}
         />
 
         <HabitManager
@@ -33,6 +45,7 @@ function Settings() {
           onAdd={addHabit}
           onUpdate={updateHabit}
           onDelete={deleteHabit}
+          saving={saving}
         />
 
       </div>

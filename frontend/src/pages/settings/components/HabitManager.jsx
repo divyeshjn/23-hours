@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+
 import { Plus, Pencil, Trash2 } from "lucide-react";
 
 import Card from "../../../components/common/Card";
@@ -8,12 +9,19 @@ function HabitManager({
   habits,
   onAdd,
   onUpdate,
-  onDelete
+  onDelete,
+  saving
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selected, setSelected] = useState(null);
 
+  const busy = useRef(false);
+
+  const [deleteError, setDeleteError] = useState("");
+
   function openModal(habit = null) {
+    if (saving || busy.current) return;
+
     setSelected(habit);
     setModalOpen(true);
   }
@@ -23,19 +31,47 @@ function HabitManager({
     setModalOpen(false);
   }
 
-  function handleSave(habit) {
-    if (selected) {
-      onUpdate(selected.id, habit);
-    } else {
-      onAdd(habit);
+  async function handleSave(habit) {
+    const success = selected
+      ? await onUpdate(selected.id, habit)
+      : await onAdd(habit);
+
+    if (success) {
+      closeModal();
     }
 
-    closeModal();
+    return success;
   }
 
-  function handleDelete(habit) {
-    if (window.confirm(`Remove ${habit.name} from daily essentials?`)) {
-      onDelete(habit.id);
+  async function handleDelete(habit) {
+    if (saving || busy.current) return;
+
+    const confirmed = window.confirm(
+      `Remove ${habit.name} from daily essentials?`
+    );
+
+    if (!confirmed) return;
+
+    busy.current = true;
+
+    setDeleteError("");
+
+    try {
+      const success = await onDelete(habit.id);
+
+      if (!success) {
+        setDeleteError(
+          "Could not delete essential. Please retry."
+        );
+      }
+
+    } catch (err) {
+      setDeleteError(
+        err.message || "Could not delete essential."
+      );
+
+    } finally {
+      busy.current = false;
     }
   }
 
@@ -58,15 +94,45 @@ function HabitManager({
 
           <button
             type="button"
+            disabled={saving}
             onClick={() => openModal()}
             className="bg-primary text-white
-              p-2.5 rounded-xl"
+              p-2.5 rounded-xl disabled:opacity-50"
             aria-label="Add essential"
           >
             <Plus size={20} />
           </button>
 
         </div>
+
+        {deleteError && (
+          <p
+            role="alert"
+            className="text-sm text-red-600 mb-3"
+          >
+            {deleteError}
+          </p>
+        )}
+
+        {habits.length === 0 && (
+          <div className="py-6 text-center">
+
+            <p className="text-sm text-muted">
+              No daily essentials added yet.
+            </p>
+
+            <button
+              type="button"
+              disabled={saving}
+              onClick={() => openModal()}
+              className="text-sm text-primary
+                font-semibold mt-3 disabled:opacity-50"
+            >
+              Add your first essential
+            </button>
+
+          </div>
+        )}
 
         <div className="divide-y divide-border">
 
@@ -100,18 +166,22 @@ function HabitManager({
 
               <button
                 type="button"
+                disabled={saving}
                 onClick={() => openModal(habit)}
                 aria-label={`Edit ${habit.name}`}
-                className="p-2 text-muted"
+                className="p-2 text-muted
+                  disabled:opacity-50"
               >
                 <Pencil size={17} />
               </button>
 
               <button
                 type="button"
+                disabled={saving}
                 onClick={() => handleDelete(habit)}
                 aria-label={`Delete ${habit.name}`}
-                className="p-2 text-red-400"
+                className="p-2 text-red-400
+                  disabled:opacity-50"
               >
                 <Trash2 size={17} />
               </button>
@@ -126,6 +196,7 @@ function HabitManager({
       {modalOpen && (
         <HabitModal
           habit={selected}
+          saving={saving}
           onSave={handleSave}
           onClose={closeModal}
         />

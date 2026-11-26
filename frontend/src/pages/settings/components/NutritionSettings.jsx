@@ -1,12 +1,16 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+
 import Card from "../../../components/common/Card";
 
-function NutritionSettings({ targets, onSave }) {
+function NutritionSettings({ targets, onSave, saving }) {
   const [form, setForm] = useState({
     ...targets
   });
 
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
+
+  const busy = useRef(false);
 
   const fields = [
     {
@@ -26,8 +30,10 @@ function NutritionSettings({ targets, onSave }) {
     }
   ];
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
+
+    if (busy.current || saving) return;
 
     const updated = {
       calories: Number(form.calories),
@@ -35,12 +41,39 @@ function NutritionSettings({ targets, onSave }) {
       water: Number(form.water)
     };
 
-    if (Object.values(updated).some(
-      value => !Number.isFinite(value) || value <= 0
-    )) return;
+    if (
+      Object.values(updated).some(
+        value => !Number.isFinite(value) || value <= 0
+      )
+    ) {
+      setError("Please enter valid positive targets.");
+      return;
+    }
 
-    onSave(updated);
-    setSaved(true);
+    busy.current = true;
+
+    setSaved(false);
+    setError("");
+
+    try {
+      const success = await onSave(updated);
+
+      setSaved(success === true);
+
+      if (!success) {
+        setError(
+          "Targets could not be saved. Please retry."
+        );
+      }
+
+    } catch (err) {
+      setError(
+        err.message || "Unable to save targets."
+      );
+
+    } finally {
+      busy.current = false;
+    }
   }
 
   return (
@@ -69,6 +102,7 @@ function NutritionSettings({ targets, onSave }) {
             <div className="flex items-center gap-2">
 
               <input
+                disabled={saving}
                 required
                 type="number"
                 min="1"
@@ -81,10 +115,12 @@ function NutritionSettings({ targets, onSave }) {
                   }));
 
                   setSaved(false);
+                  setError("");
                 }}
                 className="w-24 sm:w-32 p-2.5
                   rounded-xl border border-border
-                  outline-none focus:border-sage"
+                  outline-none focus:border-sage
+                  disabled:opacity-50"
               />
 
               <span className="text-xs text-muted w-8">
@@ -96,12 +132,27 @@ function NutritionSettings({ targets, onSave }) {
           </label>
         ))}
 
+        {error && (
+          <p
+            role="alert"
+            className="text-sm text-red-600"
+          >
+            {error}
+          </p>
+        )}
+
         <button
+          disabled={saving}
           type="submit"
           className="bg-primary text-white
-            rounded-xl py-3 font-semibold mt-2"
+            rounded-xl py-3 font-semibold mt-2
+            disabled:opacity-50"
         >
-          {saved ? "Targets saved" : "Save targets"}
+          {saving
+            ? "Please wait..."
+            : saved
+              ? "Targets saved"
+              : "Save targets"}
         </button>
 
       </form>

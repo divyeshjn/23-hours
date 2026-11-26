@@ -1,4 +1,12 @@
-import useLocalStorage from "../../../hooks/useLocalStorage";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef
+} from "react";
+
+import { dailyLogService } from "../../../services/dailyLogService";
+
 import { calculateTotals } from "../../../utils/nutrition";
 
 const EMPTY_LOG = {
@@ -14,140 +22,219 @@ const EMPTY_LOG = {
   }
 };
 
-function useDailyLog(date) {
-  const storageKey = `23-hours:daily-log:${date}`;
+function normaliseLog(data) {
+  return {
+    ...EMPTY_LOG,
+    ...data,
 
-  const [storedLog, setLog] = useLocalStorage(
-    storageKey,
-    EMPTY_LOG
-  );
+    meals: data.meals || {},
+    completedHabits: data.completedHabits || {},
+    extras: data.extras || [],
 
-  // Support meals saved using our Stage 3 format.
-  function normaliseLog(value) {
-    if (!value.meals) {
-      return {
-        ...EMPTY_LOG,
-        meals: value
-      };
+    workout: {
+      ...EMPTY_LOG.workout,
+      ...data.workout,
+      duration: data.workout?.duration ?? ""
     }
+  };
+}
 
-    return {
-      ...EMPTY_LOG,
-      ...value
-    };
+export default function useDailyLog(date) {
+  const [log, setLog] = useState(EMPTY_LOG);
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+
+  const logRef = useRef(EMPTY_LOG);
+  const queueRef = useRef(Promise.resolve());
+  const pendingRef = useRef(0);
+  const readyRef = useRef(false);
+
+  function applyLog(data) {
+    const updatedLog = normaliseLog(data);
+
+    logRef.current = updatedLog;
+    setLog(updatedLog);
   }
 
-  const log = normaliseLog(storedLog);
+  // FETCH DAILY LOG
 
-  function updateLog(updater) {
-    setLog(previous =>
-      updater(normaliseLog(previous))
+  const loadLog = useCallback(async () => {
+    if (pendingRef.current > 0) {
+      return;
+    }
+
+    try {
+      readyRef.current = false;
+
+      setLoading(true);
+      setError(null);
+
+      const data =
+        await dailyLogService.getByDate(date);
+
+      applyLog(data);
+
+      readyRef.current = true;
+
+    } catch (error) {
+      setError(error.message);
+
+    } finally {
+      setLoading(false);
+    }
+  }, [date]);
+
+  useEffect(() => {
+    loadLog();
+  }, [loadLog]);
+
+  // PROCESS UPDATES SEQUENTIALLY
+
+  function executeUpdate(operation) {
+    if (!readyRef.current) {
+      setError("Daily log is not ready.");
+      return Promise.resolve(false);
+    }
+
+    pendingRef.current += 1;
+    setSaving(true);
+
+    const task = queueRef.current.then(async () => {
+      try {
+        setError(null);
+
+        const data = await operation();
+
+        applyLog(data);
+
+        return true;
+
+      } catch (error) {
+        setError(error.message);
+
+        return false;
+
+      } finally {
+        pendingRef.current -= 1;
+
+        if (pendingRef.current === 0) {
+          setSaving(false);
+        }
+      }
+    });
+
+    queueRef.current = task;
+
+    return task;
+  }
+
+  // MEALS
+
+  function saveMeal(mealId, entry) {
+    return executeUpdate(() =>
+      dailyLogService.saveMeal(
+        date,
+        mealId,
+        entry
+      )
     );
   }
 
-  function saveMeal(mealId, entry) {
-    updateLog(previous => ({
-      ...previous,
-      meals: {
-        ...previous.meals,
-        [mealId]: entry
-      }
-    }));
-  }
-
   function deleteMeal(mealId) {
-    updateLog(previous => {
-      const meals = { ...previous.meals };
-
-      delete meals[mealId];
-
-      return {
-        ...previous,
-        meals
-      };
-    });
+    return executeUpdate(() =>
+      dailyLogService.deleteMeal(
+        date,
+        mealId
+      )
+    );
   }
+
+  // CUSTOM ESSENTIALS
 
   function toggleHabit(habit) {
-    updateLog(previous => {
-      const completedHabits = {
-        ...previous.completedHabits
-      };
+    return executeUpdate(() => {
+      const completed =
+        logRef.current.completedHabits[habit.id];
 
-      if (completedHabits[habit.id]) {
-        delete completedHabits[habit.id];
-      } else {
-        completedHabits[habit.id] = {
-          ...habit,
-          completedAt: new Date().toISOString()
-        };
+      if (completed) {
+        return dailyLogService.uncompleteHabit(
+          date,
+          habit.id
+        );
       }
 
-      return {
-        ...previous,
-        completedHabits
-      };
+      return dailyLogService.completeHabit(
+        date,
+        habit.id
+      );
     });
   }
 
+  // WATER
+
   function changeWater(amount) {
-    updateLog(previous => ({
-      ...previous,
-      water: Math.max(0, previous.water + amount)
-    }));
-  }
-
-  function updateWorkout(data) {
-    updateLog(previous => ({
-      ...previous,
-      workout: {
-        ...previous.workout,
-        ...data
-      }
-    }));
-  }
-
-  function saveExtra(entry) {
-    updateLog(previous => {
-      const exists = previous.extras.some(
-        extra => extra.id === entry.id
+    return executeUpdate(() => {
+      const water = Math.max(
+        0,
+        logRef.current.water + amount
       );
 
-      return {
-        ...previous,
-        extras: exists
-          ? previous.extras.map(extra =>
-              extra.id === entry.id ? entry : extra
-            )
-          : [
-              ...previous.extras,
-              {
-                ...entry,
-                id: crypto.randomUUID()
-              }
-            ]
-      };
+      return dailyLogService.updateWater(
+        date,
+        water
+      );
+    });
+  }
+
+  // WORKOUT
+
+  function updateWorkout(data) {
+    return executeUpdate(() =>
+      dailyLogService.updateWorkout(
+        date,
+        data
+      )
+    );
+  }
+
+  // EXTRA FOODS
+
+  function saveExtra(entry) {
+    return executeUpdate(() => {
+      if (entry.id) {
+        return dailyLogService.updateExtra(
+          date,
+          entry.id,
+          entry
+        );
+      }
+
+      return dailyLogService.createExtra(
+        date,
+        entry
+      );
     });
   }
 
   function deleteExtra(id) {
-    updateLog(previous => ({
-      ...previous,
-      extras: previous.extras.filter(
-        extra => extra.id !== id
-      )
-    }));
+    return executeUpdate(() =>
+      dailyLogService.deleteExtra(date, id)
+    );
   }
 
-  const nutritionEntries = [
+  // NUTRITION TOTALS
+
+  const entries = [
     ...Object.values(log.meals),
     ...Object.values(log.completedHabits),
     ...log.extras
-  ];
+  ].filter(Boolean);
 
-  const totals = calculateTotals(nutritionEntries);
+  const totals = calculateTotals(entries);
 
-  const hasUnknownNutrition = nutritionEntries.some(
+  const hasUnknownNutrition = entries.some(
     entry =>
       entry.calories == null ||
       entry.protein == null
@@ -155,16 +242,26 @@ function useDailyLog(date) {
 
   return {
     ...log,
+
     totals,
     hasUnknownNutrition,
+
+    loading,
+    saving,
+    error,
+    ready: readyRef.current,
+
+    loadLog,
+
     saveMeal,
     deleteMeal,
+
     toggleHabit,
+
     changeWater,
     updateWorkout,
+
     saveExtra,
     deleteExtra
   };
 }
-
-export default useDailyLog;

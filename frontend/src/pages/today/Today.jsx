@@ -1,6 +1,8 @@
 import { useState } from "react";
 
 import PageHeader from "../../components/common/PageHeader";
+import LoadingState from "../../components/common/LoadingState";
+import ErrorState from "../../components/common/ErrorState";
 
 import NutritionOverview from "./components/NutritionOverview";
 import MealSection from "./components/MealSection";
@@ -30,6 +32,13 @@ function DailyDashboard({ date }) {
     workout,
     extras,
     hasUnknownNutrition,
+
+    loading,
+    saving,
+    error,
+    ready,
+    loadLog,
+
     saveMeal,
     deleteMeal,
     toggleHabit,
@@ -41,6 +50,7 @@ function DailyDashboard({ date }) {
 
   // Keep completed habits visible even if their
   // templates have subsequently been deleted.
+
   const visibleHabits = [
     ...settings.habits,
     ...Object.values(completedHabits).filter(
@@ -50,14 +60,52 @@ function DailyDashboard({ date }) {
     )
   ];
 
-  function handleSave(entry) {
-    saveMeal(selectedMeal.id, entry);
-    setSelectedMeal(null);
+  // Save meal
+
+  async function handleSave(entry) {
+    const success = await saveMeal(
+      selectedMeal.id,
+      entry
+    );
+
+    if (success) {
+      setSelectedMeal(null);
+    }
+    return success;
   }
 
-  function handleDelete() {
-    deleteMeal(selectedMeal.id);
-    setSelectedMeal(null);
+  // Delete meal
+
+  async function handleDelete() {
+    const success = await deleteMeal(
+      selectedMeal.id
+    );
+
+    if (success) {
+      setSelectedMeal(null);
+    }
+    return success;
+  }
+
+  // Loading state
+
+  if (loading) {
+    return (
+      <LoadingState
+        message="Loading today's nutrition..."
+      />
+    );
+  }
+
+  // Initial loading error
+
+  if (!ready) {
+    return (
+      <ErrorState
+        message={error || "Unable to load daily log"}
+        onRetry={loadLog}
+      />
+    );
   }
 
   return (
@@ -67,7 +115,37 @@ function DailyDashboard({ date }) {
         subtitle={getFormattedDate(date)}
       />
 
+      {/* Saving indicator */}
+
+      <div className="flex justify-end items-center min-h-5 mb-3">
+
+        {saving ? (
+          <span className="text-xs text-muted">
+            Saving changes...
+          </span>
+        ) : !error ? (
+          <span className="text-xs text-[#81947B]">
+            All changes saved
+          </span>
+        ) : null}
+
+      </div>
+
+      {/* API error message */}
+
+      {error && (
+        <div
+          role="alert"
+          className="bg-red-50 border border-red-100
+          text-red-600 text-sm p-3 rounded-xl mb-5"
+        >
+          {error}
+        </div>
+      )}
+
       <div className="flex flex-col gap-7">
+
+        {/* Nutrition overview */}
 
         <NutritionOverview
           totals={totals}
@@ -81,16 +159,22 @@ function DailyDashboard({ date }) {
           </p>
         )}
 
+        {/* Daily meals */}
+
         <MealSection
           meals={meals}
           onSelectMeal={setSelectedMeal}
         />
+
+        {/* Custom daily essentials */}
 
         <EssentialsSection
           habits={visibleHabits}
           completedHabits={completedHabits}
           onToggle={toggleHabit}
         />
+
+        {/* Water and workout */}
 
         <div className="grid grid-cols-1
           lg:grid-cols-2 gap-5">
@@ -108,6 +192,8 @@ function DailyDashboard({ date }) {
 
         </div>
 
+        {/* Extra foods */}
+
         <ExtrasSection
           extras={extras}
           onSave={saveExtra}
@@ -115,6 +201,8 @@ function DailyDashboard({ date }) {
         />
 
       </div>
+
+      {/* Meal modal */}
 
       {selectedMeal && (
         <MealModal

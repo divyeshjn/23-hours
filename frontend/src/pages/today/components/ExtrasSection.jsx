@@ -106,13 +106,15 @@ function ExtrasSection({
         <ExtraModal
           entry={selected}
           onClose={closeModal}
-          onSave={entry => {
-            onSave(entry);
-            closeModal();
+          onSave={async entry => {
+            const success = await onSave(entry);
+            if (success) closeModal();
+            return success;
           }}
-          onDelete={() => {
-            onDelete(selected.id);
-            closeModal();
+          onDelete={async () => {
+            const success = await onDelete(selected.id);
+            if (success) closeModal();
+            return success;
           }}
         />
       )}

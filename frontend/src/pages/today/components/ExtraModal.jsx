@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { X, Trash2 } from "lucide-react";
 
 function ExtraModal({
@@ -23,18 +23,39 @@ function ExtraModal({
     entry?.protein ?? ""
   );
 
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const lock = useRef(false);
+
+  async function run(operation) {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      if (!(await operation())) {
+        setError("Could not save changes. Check your connection and try again.");
+      }
+    } catch (err) {
+      setError(err.message || "Request failed.");
+    } finally {
+      lock.current = false;
+      setBusy(false);
+    }
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
 
     if (!name.trim()) return;
 
-    onSave({
+    run(() => onSave({
       id: entry?.id,
       name: name.trim(),
       quantity: quantity.trim(),
       calories: Number(calories),
       protein: Number(protein)
-    });
+    }));
   }
 
   return (
@@ -56,6 +77,7 @@ function ExtraModal({
           <button
             type="button"
             onClick={onClose}
+            disabled={busy}
             aria-label="Close"
           >
             <X size={22} />
@@ -72,6 +94,7 @@ function ExtraModal({
             Food name
 
             <input
+              disabled={busy}
               required
               value={name}
               onChange={e => setName(e.target.value)}
@@ -85,6 +108,7 @@ function ExtraModal({
             Quantity
 
             <input
+              disabled={busy}
               value={quantity}
               onChange={e => setQuantity(e.target.value)}
               placeholder="1 medium apple"
@@ -99,7 +123,8 @@ function ExtraModal({
               Calories (kcal)
 
               <input
-                required
+                disabled={busy}
+              required
                 type="number"
                 min="0"
                 step="any"
@@ -114,7 +139,8 @@ function ExtraModal({
               Protein (g)
 
               <input
-                required
+                disabled={busy}
+              required
                 type="number"
                 min="0"
                 step="any"
@@ -127,18 +153,22 @@ function ExtraModal({
 
           </div>
 
+          {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
+
           <button
             type="submit"
+            disabled={busy || !name.trim()}
             className="bg-primary text-white
               rounded-xl py-3.5 font-semibold"
           >
-            Save food
+            {busy ? "Please wait..." : "Save food"}
           </button>
 
           {entry && (
             <button
               type="button"
-              onClick={onDelete}
+              onClick={() => run(onDelete)}
+              disabled={busy}
               className="flex justify-center items-center
                 gap-2 text-red-500 text-sm"
             >

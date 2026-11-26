@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { X, Trash2 } from "lucide-react";
 
 function MealModal({
@@ -20,14 +20,35 @@ function MealModal({
     entry?.protein ?? ""
   );
 
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const lock = useRef(false);
+
+  async function run(operation) {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      if (!(await operation())) {
+        setError("Could not save changes. Check your connection and try again.");
+      }
+    } catch (err) {
+      setError(err.message || "Request failed.");
+    } finally {
+      lock.current = false;
+      setBusy(false);
+    }
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
 
-    onSave({
+    run(() => onSave({
       description: description.trim(),
       calories: Number(calories),
       protein: Number(protein)
-    });
+    }));
   }
 
   return (
@@ -50,6 +71,7 @@ function MealModal({
           <button
             type="button"
             onClick={onClose}
+            disabled={busy}
             aria-label="Close"
           >
             <X size={22} />
@@ -68,6 +90,7 @@ function MealModal({
             </span>
 
             <textarea
+              disabled={busy}
               required
               value={description}
               onChange={e => setDescription(e.target.value)}
@@ -86,7 +109,8 @@ function MealModal({
               </span>
 
               <input
-                required
+                disabled={busy}
+              required
                 type="number"
                 min="0"
                 step="any"
@@ -103,7 +127,8 @@ function MealModal({
               </span>
 
               <input
-                required
+                disabled={busy}
+              required
                 type="number"
                 min="0"
                 step="any"
@@ -116,20 +141,23 @@ function MealModal({
 
           </div>
 
+          {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
+
           <button
             type="submit"
-            disabled={!description.trim()}
+            disabled={busy || !description.trim()}
             className="bg-primary text-white
               rounded-xl py-3.5 font-semibold
               disabled:opacity-50"
           >
-            Save meal
+            {busy ? "Please wait..." : "Save meal"}
           </button>
 
           {entry && (
             <button
               type="button"
-              onClick={onDelete}
+              onClick={() => run(onDelete)}
+              disabled={busy}
               className="flex items-center justify-center
                 gap-2 text-red-500 text-sm py-2"
             >

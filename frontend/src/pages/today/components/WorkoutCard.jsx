@@ -1,7 +1,35 @@
+import { useState, useRef } from "react";
 import { Dumbbell, Check } from "lucide-react";
 import Card from "../../../components/common/Card";
 
 function WorkoutCard({ workout, onChange }) {
+  const [description, setDescription] = useState(workout.description || "");
+  const [duration, setDuration] = useState(workout.duration ?? "");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const lock = useRef(false);
+  const dirty = description !== workout.description || String(duration) !== String(workout.duration ?? "");
+
+  async function save(patch) {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      const success = await onChange({
+        description,
+        duration: duration === "" ? null : Number(duration),
+        ...patch
+      });
+      if (!success) setError("Could not save workout. Please try again.");
+    } catch (err) {
+      setError(err.message || "Request failed.");
+    } finally {
+      lock.current = false;
+      setBusy(false);
+    }
+  }
+
   return (
     <Card>
 
@@ -30,7 +58,8 @@ function WorkoutCard({ workout, onChange }) {
           type="button"
           aria-label="Mark workout completed"
           aria-pressed={workout.completed}
-          onClick={() => onChange({
+          disabled={busy}
+          onClick={() => save({
             completed: !workout.completed,
             restDay: false
           })}
@@ -49,7 +78,8 @@ function WorkoutCard({ workout, onChange }) {
 
         <button
           type="button"
-          onClick={() => onChange({
+          disabled={busy}
+          onClick={() => save({
             restDay: false
           })}
           className={`rounded-xl py-2.5 text-sm
@@ -62,7 +92,8 @@ function WorkoutCard({ workout, onChange }) {
 
         <button
           type="button"
-          onClick={() => onChange({
+          disabled={busy}
+          onClick={() => save({
             restDay: true,
             completed: false
           })}
@@ -80,10 +111,9 @@ function WorkoutCard({ workout, onChange }) {
         <div className="flex flex-col gap-3">
 
           <textarea
-            value={workout.description}
-            onChange={e => onChange({
-              description: e.target.value
-            })}
+            value={description}
+            disabled={busy}
+            onChange={e => setDescription(e.target.value)}
             placeholder="What did you train today?"
             className="w-full min-h-24 p-3
               rounded-xl border border-border
@@ -101,12 +131,9 @@ function WorkoutCard({ workout, onChange }) {
             <input
               type="number"
               min="0"
-              value={workout.duration}
-              onChange={e => onChange({
-                duration: e.target.value === ""
-                  ? ""
-                  : Math.max(0, Number(e.target.value))
-              })}
+              value={duration}
+              disabled={busy}
+              onChange={e => setDuration(e.target.value === "" ? "" : Math.max(0, Number(e.target.value)))}
               placeholder="60"
               className="w-24 p-2.5 border
                 border-border rounded-xl
@@ -114,6 +141,13 @@ function WorkoutCard({ workout, onChange }) {
             />
 
           </label>
+
+          <button type="button" disabled={busy || !dirty}
+            onClick={() => save({})}
+            className="bg-primary text-white rounded-xl py-2.5 text-sm disabled:opacity-50">
+            {busy ? "Saving..." : "Save workout details"}
+          </button>
+          {dirty && !busy && <p className="text-xs text-muted">Unsaved workout details</p>}
 
         </div>
       )}
@@ -124,6 +158,7 @@ function WorkoutCard({ workout, onChange }) {
         </p>
       )}
 
+      {error && <p role="alert" className="mt-3 text-sm text-red-600">{error}</p>}
     </Card>
   );
 }
