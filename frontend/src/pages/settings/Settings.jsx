@@ -1,7 +1,7 @@
 import PageHeader from "../../components/common/PageHeader";
 
 import useSettings from "../../hooks/useSettings";
-
+import SecuritySettings from "./components/SecuritySettings";
 import HabitManager from "./components/HabitManager";
 import NutritionSettings from "./components/NutritionSettings";
 
@@ -47,6 +47,8 @@ function Settings() {
           onDelete={deleteHabit}
           saving={saving}
         />
+
+        <SecuritySettings />
 
       </div>
     </>

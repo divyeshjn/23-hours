@@ -7,6 +7,8 @@ const api = axios.create({
 
   timeout: 15000,
 
+  withCredentials: true,
+
   headers: {
     "Content-Type": "application/json"
   }
@@ -28,6 +30,20 @@ api.interceptors.response.use(
 
     apiError.status = error.response?.status;
     apiError.code = error.code;
+
+    // Notify the application if a protected
+    // request fails due to an expired session.
+
+    const requestUrl = error.config?.url || "";
+
+    if (
+      apiError.status === 401 &&
+      !requestUrl.startsWith("/auth/")
+    ) {
+      window.dispatchEvent(
+        new Event("23-hours:unauthorized")
+      );
+    }
 
     return Promise.reject(apiError);
   }
