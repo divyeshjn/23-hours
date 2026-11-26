@@ -1,15 +1,34 @@
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate
+} from "react-router-dom";
+
+import MainLayout from "./layouts/MainLayout";
+
+import Today from "./pages/today/Today";
+import History from "./pages/history/History";
+import Progress from "./pages/progress/Progress";
+import Settings from "./pages/settings/Settings";
+
 function App() {
   return (
-    <main className="min-h-screen bg-[#FAF8F5] flex flex-col items-center justify-center">
-      <h1 className="text-5xl font-bold text-[#354F40]">
-        23 Hours
-      </h1>
-
-      <p className="mt-4 text-gray-500">
-        One hour in the gym. Twenty-three hours beyond it.
-      </p>
-    </main>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route index element={<Today />} />
+          <Route path="history" element={<History />} />
+          <Route path="progress" element={<Progress />} />
+          <Route path="settings" element={<Settings />} />
+          <Route
+            path="*"
+            element={<Navigate to="/" replace />}
+          />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
