@@ -26,7 +26,7 @@ import Today from "./pages/today/Today";
 import History from "./pages/history/History";
 import Progress from "./pages/progress/Progress";
 import Settings from "./pages/settings/Settings";
-
+import WeeklyCheckIn from "./pages/weekly-checkin/WeeklyCheckIn";
 // FULL SCREEN LOADING
 
 function FullScreenLoading({ message }) {
@@ -95,25 +95,11 @@ function DashboardRoutes() {
 
       <Route element={<MainLayout />}>
 
-        <Route
-          index
-          element={<Today />}
-        />
-
-        <Route
-          path="history"
-          element={<History />}
-        />
-
-        <Route
-          path="progress"
-          element={<Progress />}
-        />
-
-        <Route
-          path="settings"
-          element={<Settings />}
-        />
+        <Route index element={<Today />} />
+        <Route path="history" element={<History />} />
+        <Route path="progress" element={<Progress />} />
+        <Route path="weekly-checkin" element={<WeeklyCheckIn />} />
+        <Route path="settings" element={<Settings />} />
 
         <Route
           path="*"

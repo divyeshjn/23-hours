@@ -46,16 +46,17 @@ const weeklyCheckInSchema = new mongoose.Schema(
 
     notes: {
       type: String,
-      default: "",
-      trim: true
+      trim: true,
+      maxlength: 2000,
+      default: ""
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true
+  }
 );
 
-const WeeklyCheckIn = mongoose.model(
+export default mongoose.model(
   "WeeklyCheckIn",
   weeklyCheckInSchema
 );
-
-export default WeeklyCheckIn;

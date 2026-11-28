@@ -12,7 +12,7 @@ import EssentialsSection from "./components/EssentialsSection";
 import WaterTracker from "./components/WaterTracker";
 import WorkoutCard from "./components/WorkoutCard";
 import ExtrasSection from "./components/ExtrasSection";
-
+import WeeklyCheckInReminder from "../../components/common/WeeklyCheckInReminder";
 import useDailyLog from "./hooks/useDailyLog";
 import useSettings from "../../hooks/useSettings";
 import useTodayDate from "../../hooks/useTodayDate";
@@ -117,7 +117,7 @@ function DailyDashboard({ date }) {
 
       {/* Saving indicator */}
 
-      <div className="flex justify-end items-center min-h-5 mb-3">
+      {/* <div className="flex justify-end items-center min-h-5 mb-3">
 
         {saving ? (
           <span className="text-xs text-muted">
@@ -129,7 +129,7 @@ function DailyDashboard({ date }) {
           </span>
         ) : null}
 
-      </div>
+      </div> */}
 
       {/* API error message */}
 
@@ -144,6 +144,8 @@ function DailyDashboard({ date }) {
       )}
 
       <div className="flex flex-col gap-7">
+
+        <WeeklyCheckInReminder />
 
         {/* Nutrition overview */}
 

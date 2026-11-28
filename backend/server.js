@@ -15,7 +15,7 @@ import {
 import authRoutes from "./routes/authRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
 import dailyLogRoutes from "./routes/dailyLogRoutes.js";
-
+import weeklyCheckInRoutes from "./routes/weeklyCheckInRoutes.js";
 import requireAuth from "./middleware/requireAuth.js";
 import validateOrigin from "./middleware/validateOrigin.js";
 import errorHandler from "./middleware/errorHandler.js";
@@ -134,6 +134,11 @@ async function startServer() {
     app.use(
       "/api/daily-logs",
       dailyLogRoutes
+    );
+
+    app.use(
+      "/api/weekly-checkins",
+      weeklyCheckInRoutes
     );
 
     // Unknown endpoints
