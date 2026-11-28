@@ -43,7 +43,7 @@ function ExtrasSection({
             type="button"
             onClick={() => openModal()}
             className="flex items-center gap-1.5
-              bg-primary text-white rounded-xl
+              bg-primary text-background font-semibold rounded-xl
               px-3 py-2 text-sm"
           >
             <Plus size={17} />

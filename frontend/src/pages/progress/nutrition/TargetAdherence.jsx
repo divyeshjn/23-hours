@@ -95,11 +95,11 @@ export default function TargetAdherence({
 
                 <div className="h-2.5 flex-1
                   overflow-hidden rounded-full
-                  bg-[#A8BBA230]">
+                  bg-primary/15">
 
                   <div
                     className="h-full rounded-full
-                      bg-[#81947B] transition-all"
+                      bg-primary transition-all"
                     style={{
                       width: `${Math.min(
                         percentage ?? 0,

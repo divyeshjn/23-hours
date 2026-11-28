@@ -10,7 +10,8 @@ export default function NutritionEntryModal({
   entry,
   onClose,
   onSave,
-  onDelete
+  onDelete,
+  requireName=false
 }) {
   const [mode, setMode] = useState(
     entry ? "manual" : "choose"
@@ -18,6 +19,10 @@ export default function NutritionEntryModal({
 
   const [calories, setCalories] = useState(
     entry?.calories ?? ""
+  );
+
+  const [name, setName] = useState(
+    entry?.name ?? ""
   );
 
   const [protein, setProtein] = useState(
@@ -125,6 +130,11 @@ export default function NutritionEntryModal({
     const cal = Number(calories);
     const pro = Number(protein);
 
+    if (requireName && !name.trim()) {
+      setError("Please enter the food name.");
+      return;
+    }
+
     if (
       String(calories).trim() === "" ||
       String(protein).trim() === "" ||
@@ -142,6 +152,7 @@ export default function NutritionEntryModal({
 
     run(() =>
       onSave({
+        name: name.trim(),
         calories: cal,
         protein: pro
       })
@@ -156,8 +167,8 @@ export default function NutritionEntryModal({
 
   return (
     <div
-      className="fixed inset-0 z-[100]
-        bg-black/30 backdrop-blur-sm
+      className="fixed inset-0 z-100
+        bg-black/75 backdrop-blur-sm
         flex items-end sm:items-center
         justify-center sm:p-4"
     >
@@ -166,7 +177,7 @@ export default function NutritionEntryModal({
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="bg-white w-full sm:max-w-md
+        className="bg-card border border-border w-full sm:max-w-md
           rounded-t-3xl sm:rounded-3xl
           px-6 pt-6
           pb-[calc(24px+env(safe-area-inset-bottom,0px))]
@@ -181,7 +192,7 @@ export default function NutritionEntryModal({
         <div
           aria-hidden="true"
           className="w-10 h-1 rounded-full
-            bg-border mx-auto mb-5 sm:hidden"
+            bg-muted/40 mx-auto mb-5 sm:hidden"
         />
 
         {/* Modal header */}
@@ -193,7 +204,7 @@ export default function NutritionEntryModal({
 
           <h2
             className="text-xl font-heading
-              font-bold text-primary"
+              font-bold text-foreground"
           >
             {title}
           </h2>
@@ -205,7 +216,7 @@ export default function NutritionEntryModal({
             aria-label="Close"
             className="flex items-center
               justify-center w-10 h-10
-              rounded-full bg-background
+              rounded-full bg-surface
               text-muted hover:text-primary
               transition-colors
               disabled:opacity-50"
@@ -237,6 +248,9 @@ export default function NutritionEntryModal({
 
         {mode === "manual" && (
           <NutritionEntryForm
+            requireName={requireName}
+            name={name}
+            setName={setName}
             calories={calories}
             protein={protein}
             setCalories={setCalories}

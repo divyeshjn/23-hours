@@ -4,43 +4,58 @@ export default function ProgressStat({
   unit,
   icon: Icon
 }) {
+  const hasValue =
+    value !== null && value !== undefined;
 
   return (
-
-    <div className="min-w-0 rounded-2xl border
-      border-border bg-card p-4">
+    <div className="min-w-0 rounded-2xl
+      border border-border bg-card
+      p-4 sm:p-5">
 
       <div className="flex items-center
         justify-between gap-2">
 
-        <p className="text-xs sm:text-sm text-muted">
+        <p className="text-xs font-medium
+          text-muted sm:text-sm">
           {label}
         </p>
 
         {Icon && (
-          <Icon
-            size={17}
-            className="shrink-0 text-primary"
-          />
+
+          <div className="flex h-9 w-9 shrink-0
+            items-center justify-center
+            rounded-xl bg-primary/10">
+
+            <Icon
+              size={18}
+              className="text-primary"
+            />
+
+          </div>
+
         )}
 
       </div>
 
       <div className="mt-3 flex flex-wrap
-        items-baseline gap-1">
+        items-baseline gap-1.5">
 
-        <span className="text-2xl sm:text-3xl
-          font-heading font-bold text-primary">
+        <span className={`break-words font-heading
+          text-2xl font-bold tabular-nums
+          sm:text-3xl ${
+            hasValue
+              ? "text-foreground"
+              : "text-muted"
+          }`}>
 
           {value ?? "—"}
 
         </span>
 
-        {value !== null &&
-          value !== undefined &&
-          unit && (
+        {hasValue && unit && (
 
-          <span className="text-sm text-muted">
+          <span className="text-xs font-medium
+            text-muted sm:text-sm">
             {unit}
           </span>
 
@@ -49,6 +64,5 @@ export default function ProgressStat({
       </div>
 
     </div>
-
   );
 }

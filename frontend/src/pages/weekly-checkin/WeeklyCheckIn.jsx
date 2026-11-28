@@ -1,3 +1,5 @@
+import { CalendarDays, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+
 import PageHeader from "../../components/common/PageHeader";
 import LoadingState from "../../components/common/LoadingState";
 
@@ -26,50 +28,103 @@ export default function WeeklyCheckIn() {
 
   return (
     <div className="space-y-6">
+
       <PageHeader
         title="Weekly Check-in"
         subtitle="Track your physical progress over time"
       />
 
       <div className="flex flex-wrap items-center
-        justify-between gap-3 rounded-xl border
-        border-gray-200 p-4 dark:border-neutral-800">
+        justify-between gap-3 rounded-2xl
+        border border-border bg-card p-4 sm:p-5">
 
-        <div>
-          <p className="text-sm text-gray-500">
-            Current week
-          </p>
+        <div className="flex items-center gap-3">
 
-          <p className="font-semibold">
-            {formatWeekDate(weekDate)}
-          </p>
+          <div className="flex h-12 w-12 shrink-0
+            items-center justify-center rounded-xl
+            bg-primary/10">
+
+            <CalendarDays
+              size={23}
+              className="text-primary"
+            />
+
+          </div>
+
+          <div>
+
+            <p className="text-xs text-muted">
+              Current week
+            </p>
+
+            <p className="mt-1 font-heading
+              font-bold text-foreground">
+
+              {formatWeekDate(weekDate)}
+
+            </p>
+
+          </div>
+
         </div>
 
-        <span className={`rounded-full px-3 py-1 text-xs
-          font-medium ${
-            completed
-              ? "bg-emerald-500/10 text-emerald-600"
-              : "bg-amber-500/10 text-amber-600"
-          }`}>
+        <span
+          className={`inline-flex items-center gap-1.5
+            rounded-full border px-3 py-1.5
+            text-xs font-medium ${
+              completed
+                ? "border-primary/20 bg-primary/10 text-primary"
+                : "border-amber-500/20 bg-amber-500/10 text-amber-400"
+            }`}
+        >
+
+          {completed ? (
+            <CheckCircle2 size={14} />
+          ) : (
+            <Clock size={14} />
+          )}
+
           {completed ? "Completed" : "Pending"}
+
         </span>
+
       </div>
 
       {error && (
-        <div className="rounded-xl bg-red-500/10
-          p-4 text-sm text-red-500">
-          {error}
 
-          <button
-            onClick={refresh}
-            className="ml-3 underline"
-          >
-            Retry
-          </button>
+        <div
+          role="alert"
+          className="flex items-start gap-3
+            rounded-xl border border-danger/20
+            bg-danger/10 p-4 text-sm text-red-400"
+        >
+
+          <AlertCircle
+            size={19}
+            className="mt-0.5 shrink-0"
+          />
+
+          <div className="flex-1">
+
+            <p>{error}</p>
+
+            <button
+              type="button"
+              onClick={refresh}
+              className="mt-2 font-semibold underline
+                underline-offset-4 hover:text-red-300"
+            >
+              Retry
+            </button>
+
+          </div>
+
         </div>
+
       )}
 
       {currentCheckIn && (
+
         <CheckInForm
           key={weekDate}
           initialData={currentCheckIn}
@@ -77,9 +132,11 @@ export default function WeeklyCheckIn() {
           onSave={save}
           saving={saving}
         />
+
       )}
 
       <CheckInHistory checkIns={checkIns} />
+
     </div>
   );
 }

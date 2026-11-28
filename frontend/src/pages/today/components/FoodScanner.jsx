@@ -152,7 +152,8 @@ export default function FoodScanner({
             onClick={() => galleryRef.current?.click()}
             className="flex items-center
               justify-center gap-2 border
-              border-border rounded-xl
+              border-border bg-surface
+              hover:border-primary/50 rounded-xl
               py-3.5 font-medium"
           >
 

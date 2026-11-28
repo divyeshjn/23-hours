@@ -7,6 +7,9 @@ import {
 } from "lucide-react";
 
 export default function NutritionEntryForm({
+  requireName=false,
+  name="",
+  setName,
   calories,
   protein,
   setCalories,
@@ -20,6 +23,7 @@ export default function NutritionEntryForm({
   onBack
 }) {
   const valid =
+    (!requireName || name.trim() !== "") &&
     String(calories).trim() !== "" &&
     String(protein).trim() !== "" &&
     Number.isFinite(Number(calories)) &&
@@ -42,7 +46,7 @@ export default function NutritionEntryForm({
       {estimated && (
 
         <div className="flex items-start
-          gap-3 bg-sage/15 rounded-xl p-3">
+          gap-3 bg-primary/10 rounded-xl p-3">
 
           <Sparkles
             size={20}
@@ -66,15 +70,42 @@ export default function NutritionEntryForm({
 
       )}
 
+      {requireName && (
+        <label className="flex flex-col gap-2">
+
+          <span className="text-sm font-semibold">
+            Food name
+          </span>
+
+          <input
+            type="text"
+            value={name}
+            onChange={event =>
+              setName(event.target.value)
+            }
+            placeholder="e.g. Banana, coffee, sandwich"
+            maxLength={100}
+            required
+            disabled={busy}
+            className="w-full rounded-xl
+              border border-border bg-background
+              px-4 py-3 outline-none
+              focus:border-primary
+              transition-colors"
+          />
+
+        </label>
+      )}
+
       <div className="grid grid-cols-2 gap-3">
 
         <label className="flex flex-col
-          gap-3 rounded-2xl bg-background
+          gap-3 rounded-2xl bg-surface
           border border-border p-4">
 
           <Flame
             size={25}
-            className="text-[#CB906D]"
+            className="text-primary"
           />
 
           <span className="text-xs font-medium">
@@ -102,7 +133,7 @@ export default function NutritionEntryForm({
         </label>
 
         <label className="flex flex-col
-          gap-3 rounded-2xl bg-background
+          gap-3 rounded-2xl bg-surface
           border border-border p-4">
 
           <Beef
@@ -139,7 +170,7 @@ export default function NutritionEntryForm({
       {error && (
         <p
           role="alert"
-          className="text-sm text-red-600"
+          className="text-sm text-red-400"
         >
           {error}
         </p>
@@ -148,7 +179,7 @@ export default function NutritionEntryForm({
       <button
         type="submit"
         disabled={busy || !valid}
-        className="bg-primary text-white
+        className="bg-primary text-background
           rounded-xl py-3.5 font-semibold
           disabled:opacity-50"
       >
@@ -168,7 +199,7 @@ export default function NutritionEntryForm({
           onClick={onDelete}
           disabled={busy}
           className="flex items-center
-            justify-center gap-2 text-red-500
+            justify-center gap-2 text-red-400
             text-sm py-2"
         >
 

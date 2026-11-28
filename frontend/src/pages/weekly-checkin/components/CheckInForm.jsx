@@ -98,20 +98,24 @@ export default function CheckInForm({
     <form
       onSubmit={handleSubmit}
       className="space-y-6 rounded-2xl border
-      border-gray-200 p-5 dark:border-neutral-800"
+        border-border bg-card p-4 sm:p-6"
     >
+
       <div>
-        <h2 className="text-lg font-semibold">
+
+        <h2 className="text-lg font-heading font-bold text-foreground">
           Body measurements
         </h2>
 
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-muted">
           Record your measurements under similar
           conditions each week.
         </p>
+
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
         <MeasurementInput
           label="Body weight"
           name="weight"
@@ -120,51 +124,73 @@ export default function CheckInForm({
           unit="kg"
         />
 
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium">
+        <div className="flex flex-col gap-2 min-w-0">
+
+          <label
+            htmlFor="measuredOn"
+            className="text-sm font-medium text-foreground"
+          >
             Measurement date
           </label>
 
           <input
+            id="measuredOn"
             type="date"
             name="measuredOn"
             value={form.measuredOn}
             max={getISTDate()}
             onChange={handleChange}
             required
-            className="rounded-xl border border-gray-200
-            bg-transparent px-4 py-3
-            dark:border-neutral-700"
+            className="w-full min-w-0 rounded-xl
+              border border-border bg-surface
+              px-4 py-3 text-foreground
+              outline-none focus:border-primary
+              transition-colors"
           />
+
         </div>
+
       </div>
 
-      <div className="flex items-center justify-between">
-        <h3 className="font-medium">
+      <div className="border-t border-border" />
+
+      <div className="flex flex-wrap items-center
+        justify-between gap-3">
+
+        <h3 className="font-heading font-semibold text-foreground">
           Circumference measurements
         </h3>
 
-        <div className="flex rounded-lg border
-          border-gray-200 p-1 dark:border-neutral-700">
+        <div className="flex rounded-xl border
+          border-border bg-surface p-1">
+
           {["in", "cm"].map((unit) => (
+
             <button
               key={unit}
               type="button"
               onClick={() => handleUnitChange(unit)}
-              className={`rounded-md px-4 py-1 text-sm ${
-                form.unit === unit
-                  ? "bg-emerald-600 text-white"
-                  : "text-gray-500"
-              }`}
+              aria-pressed={form.unit === unit}
+              className={`rounded-lg px-4 py-2
+                text-sm font-medium transition-colors ${
+                  form.unit === unit
+                    ? "bg-primary text-background"
+                    : "text-muted hover:text-foreground"
+                }`}
             >
               {unit}
             </button>
+
           ))}
+
         </div>
+
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+
         {measurements.map(({ name, label }) => (
+
           <MeasurementInput
             key={name}
             label={label}
@@ -173,46 +199,41 @@ export default function CheckInForm({
             onChange={handleChange}
             unit={form.unit}
           />
+
         ))}
-      </div>
 
-      <div className="space-y-2">
-        {/* <label className="text-sm font-medium">
-          Weekly notes
-        </label> */}
-
-        {/* <textarea
-          name="notes"
-          value={form.notes}
-          onChange={handleChange}
-          rows={4}
-          placeholder="Strength, recovery, energy,
-          digestion, hunger and other observations..."
-          className="w-full resize-none rounded-xl border
-          border-gray-200 bg-transparent p-4 outline-none
-          focus:border-emerald-500 dark:border-neutral-700"
-        /> */}
       </div>
 
       {saved && (
-        <p className="text-sm text-emerald-600">
+
+        <div
+          role="status"
+          className="rounded-xl border
+            border-primary/20 bg-primary/10
+            px-4 py-3 text-sm text-primary"
+        >
           Weekly check-in saved successfully.
-        </p>
+        </div>
+
       )}
 
       <button
         type="submit"
         disabled={saving}
-        className="w-full rounded-xl bg-emerald-600
-        py-3 font-medium text-white hover:bg-emerald-700
-        disabled:opacity-50"
+        className="w-full rounded-xl bg-primary
+          py-3.5 font-bold text-background
+          transition-opacity hover:opacity-90
+          disabled:opacity-50"
       >
+
         {saving
           ? "Saving..."
           : completed
             ? "Update Check-in"
             : "Save Weekly Check-in"}
+
       </button>
+
     </form>
   );
 }

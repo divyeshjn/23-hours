@@ -16,7 +16,7 @@ function NutritionOverview({ totals, targets }) {
           value={totals.calories}
           target={targets.calories}
           unit="kcal"
-          color="#E8B8A2"
+          color="#25D366"
         />
 
         <ProgressRing
@@ -24,7 +24,7 @@ function NutritionOverview({ totals, targets }) {
           value={totals.protein}
           target={targets.protein}
           unit="g"
-          color="#A8BBA2"
+          color="#128C7E"
         />
 
       </div>

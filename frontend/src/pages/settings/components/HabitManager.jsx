@@ -1,6 +1,12 @@
 import { useState, useRef } from "react";
 
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  AlertCircle,
+  ClipboardList
+} from "lucide-react";
 
 import Card from "../../../components/common/Card";
 import HabitModal from "./HabitModal";
@@ -79,15 +85,18 @@ function HabitManager({
     <>
       <Card>
 
-        <div className="flex items-center
-          justify-between mb-5">
+        <div className="mb-5 flex items-center
+          justify-between gap-3">
 
           <div>
-            <h2 className="text-lg font-bold">
+            <h2 className="font-heading text-lg
+              font-bold text-foreground">
+
               Daily essentials
+
             </h2>
 
-            <p className="text-xs text-muted mt-1">
+            <p className="mt-1 text-xs text-muted">
               Manage your recurring habits
             </p>
           </div>
@@ -96,26 +105,54 @@ function HabitManager({
             type="button"
             disabled={saving}
             onClick={() => openModal()}
-            className="bg-primary text-white
-              p-2.5 rounded-xl disabled:opacity-50"
+            className="flex h-10 w-10 shrink-0
+              items-center justify-center
+              rounded-xl bg-primary text-background
+              transition-opacity hover:opacity-90
+              disabled:opacity-50"
             aria-label="Add essential"
           >
-            <Plus size={20} />
+            <Plus size={22} strokeWidth={2.5} />
           </button>
 
         </div>
 
         {deleteError && (
-          <p
+
+          <div
             role="alert"
-            className="text-sm text-red-600 mb-3"
+            className="mb-4 flex items-start gap-2
+              rounded-xl border border-danger/20
+              bg-danger/10 p-3 text-sm text-red-400"
           >
-            {deleteError}
-          </p>
+
+            <AlertCircle
+              size={17}
+              className="mt-0.5 shrink-0"
+            />
+
+            <p>{deleteError}</p>
+
+          </div>
+
         )}
 
         {habits.length === 0 && (
-          <div className="py-6 text-center">
+
+          <div className="rounded-2xl border
+            border-dashed border-border
+            bg-surface/50 px-4 py-8 text-center">
+
+            <div className="mx-auto mb-3 flex
+              h-14 w-14 items-center justify-center
+              rounded-2xl bg-primary/10">
+
+              <ClipboardList
+                size={26}
+                className="text-primary"
+              />
+
+            </div>
 
             <p className="text-sm text-muted">
               No daily essentials added yet.
@@ -125,68 +162,113 @@ function HabitManager({
               type="button"
               disabled={saving}
               onClick={() => openModal()}
-              className="text-sm text-primary
-                font-semibold mt-3 disabled:opacity-50"
+              className="mt-4 rounded-xl
+                bg-primary/10 px-4 py-2.5
+                text-sm font-semibold text-primary
+                transition-colors hover:bg-primary/20
+                disabled:opacity-50"
             >
               Add your first essential
             </button>
 
           </div>
+
         )}
 
         <div className="divide-y divide-border">
 
           {habits.map(habit => (
+
             <div
               key={habit.id}
-              className="flex items-center gap-3 py-4"
+              className="flex items-center
+                gap-3 py-4"
             >
 
-              <span className="text-2xl">
+              <div className="flex h-12 w-12
+                shrink-0 items-center justify-center
+                rounded-xl border border-border
+                bg-surface text-2xl">
+
                 {habit.icon}
-              </span>
-
-              <div className="flex-1 min-w-0">
-
-                <h3 className="font-semibold text-sm">
-                  {habit.name}
-                </h3>
-
-                <p className="text-xs text-muted mt-1">
-                  {habit.quantity}
-                </p>
-
-                <p className="text-xs text-muted mt-1">
-                  {habit.required
-                    ? "Daily goal"
-                    : "Optional"}
-                </p>
 
               </div>
 
-              <button
-                type="button"
-                disabled={saving}
-                onClick={() => openModal(habit)}
-                aria-label={`Edit ${habit.name}`}
-                className="p-2 text-muted
-                  disabled:opacity-50"
-              >
-                <Pencil size={17} />
-              </button>
+              <div className="min-w-0 flex-1">
 
-              <button
-                type="button"
-                disabled={saving}
-                onClick={() => handleDelete(habit)}
-                aria-label={`Delete ${habit.name}`}
-                className="p-2 text-red-400
-                  disabled:opacity-50"
-              >
-                <Trash2 size={17} />
-              </button>
+                <h3 className="break-words
+                  text-sm font-semibold
+                  text-foreground">
+
+                  {habit.name}
+
+                </h3>
+
+                <p className="mt-1 break-words
+                  text-xs text-muted">
+
+                  {habit.quantity}
+
+                </p>
+
+                <span className={`mt-2 inline-flex
+                  rounded-md px-2 py-1
+                  text-[10px] font-medium ${
+                    habit.required
+                      ? "bg-primary/10 text-primary"
+                      : "bg-surface text-muted"
+                  }`}>
+
+                  {habit.required
+                    ? "Daily goal"
+                    : "Optional"}
+
+                </span>
+
+              </div>
+
+              <div className="flex shrink-0
+                items-center gap-1">
+
+                <button
+                  type="button"
+                  disabled={saving}
+                  onClick={() => openModal(habit)}
+                  aria-label={`Edit ${habit.name}`}
+                  className="flex h-9 w-9
+                    items-center justify-center
+                    rounded-lg text-muted
+                    transition-colors
+                    hover:bg-primary/10
+                    hover:text-primary
+                    disabled:opacity-50"
+                >
+
+                  <Pencil size={17} />
+
+                </button>
+
+                <button
+                  type="button"
+                  disabled={saving}
+                  onClick={() => handleDelete(habit)}
+                  aria-label={`Delete ${habit.name}`}
+                  className="flex h-9 w-9
+                    items-center justify-center
+                    rounded-lg text-red-400
+                    transition-colors
+                    hover:bg-danger/10
+                    disabled:opacity-50"
+                >
+
+                  <Trash2 size={17} />
+
+                </button>
+
+              </div>
 
             </div>
+
           ))}
 
         </div>
@@ -194,12 +276,14 @@ function HabitManager({
       </Card>
 
       {modalOpen && (
+
         <HabitModal
           habit={selected}
           saving={saving}
           onSave={handleSave}
           onClose={closeModal}
         />
+
       )}
 
     </>

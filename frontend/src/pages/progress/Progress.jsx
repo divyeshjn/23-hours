@@ -12,7 +12,7 @@ function Progress() {
     useState("nutrition");
 
   return (
-    <div className="space-y-5">
+    <div className="min-w-0 space-y-5 sm:space-y-6">
 
       <PageHeader
         title="Progress"
@@ -24,10 +24,14 @@ function Progress() {
         onChange={setActiveTab}
       />
 
-      {activeTab === "nutrition"
-        ? <NutritionProgress />
-        : <BodyProgress />
-      }
+      <div className="min-w-0">
+
+        {activeTab === "nutrition"
+          ? <NutritionProgress />
+          : <BodyProgress />
+        }
+
+      </div>
 
     </div>
   );

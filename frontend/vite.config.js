@@ -29,9 +29,9 @@ export default defineConfig({
         description:
           "Personal nutrition, fitness and progress tracker.",
 
-        theme_color: "#354F40",
+        theme_color: "#0B0B0B",
 
-        background_color: "#FAF8F5",
+        background_color: "#0B0B0B",
 
         display: "standalone",
 

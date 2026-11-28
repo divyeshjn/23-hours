@@ -15,8 +15,8 @@ function WaterTracker({ water, target, onChange }) {
 
         <div className="flex items-center gap-3">
 
-          <div className="p-3 rounded-xl bg-blue-50
-            text-blue-400">
+          <div className="p-3 rounded-xl bg-primary/10
+            text-primary">
 
             <Droplets size={23} />
 
@@ -62,7 +62,7 @@ function WaterTracker({ water, target, onChange }) {
         rounded-full overflow-hidden">
 
         <div
-          className="h-full bg-blue-300 rounded-full
+          className="h-full bg-primary rounded-full
             transition-all duration-300"
           style={{ width: `${percentage}%` }}
         />

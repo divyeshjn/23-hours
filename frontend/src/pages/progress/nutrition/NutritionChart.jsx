@@ -33,8 +33,7 @@ export default function NutritionChart({
   );
 
   return (
-    <section className="rounded-2xl border
-      border-border bg-card p-4 sm:p-6">
+    <section className="rounded-2xl border border-border bg-card p-4 sm:p-6">
 
       <div className="flex items-center gap-2">
 
@@ -45,8 +44,7 @@ export default function NutritionChart({
           />
         )}
 
-        <h2 className="font-heading
-          font-bold text-lg">
+        <h2 className="font-heading font-bold text-lg text-foreground">
           {title}
         </h2>
 
@@ -57,10 +55,11 @@ export default function NutritionChart({
       </p>
 
       {!hasData ? (
-        <div className="py-12 text-center
-          text-sm text-muted">
+
+        <div className="py-12 text-center text-sm text-muted">
           No data recorded for this period.
         </div>
+
       ) : (
         <>
           <div className="mt-6 h-64 w-full min-w-0">
@@ -80,7 +79,7 @@ export default function NutritionChart({
               >
 
                 <CartesianGrid
-                  stroke="#EAE7E1"
+                  stroke="#292929"
                   strokeDasharray="4 4"
                   vertical={false}
                 />
@@ -89,12 +88,12 @@ export default function NutritionChart({
                   dataKey="label"
                   tick={{
                     fontSize: 10,
-                    fill: "#858780"
+                    fill: "#A0A0A0"
                   }}
                   axisLine={false}
                   tickLine={false}
                   interval="preserveStartEnd"
-                  minTickGap={15} 
+                  minTickGap={15}
                 />
 
                 <YAxis
@@ -107,7 +106,7 @@ export default function NutritionChart({
                   ]}
                   tick={{
                     fontSize: 11,
-                    fill: "#858780"
+                    fill: "#A0A0A0"
                   }}
                   axisLine={false}
                   tickLine={false}
@@ -121,20 +120,29 @@ export default function NutritionChart({
                     title
                   ]}
                   cursor={{
-                    fill: "#A8BBA220"
+                    fill: "rgba(37, 211, 102, 0.08)"
                   }}
                   contentStyle={{
                     borderRadius: "12px",
-                    border: "1px solid #EAE7E1",
-                    background: "#FFFFFF",
-                    fontSize: "13px"
+                    border: "1px solid #353535",
+                    background: "#202020",
+                    fontSize: "13px",
+                    boxShadow: "0 4px 16px rgba(0,0,0,0.3)"
+                  }}
+                  labelStyle={{
+                    color: "#F5F5F5",
+                    fontWeight: 600,
+                    marginBottom: "4px"
+                  }}
+                  itemStyle={{
+                    color: "#25D366"
                   }}
                 />
 
                 {target > 0 && (
                   <ReferenceLine
                     y={target / divisor}
-                    stroke="#354F40"
+                    stroke="#A0A0A0"
                     strokeWidth={1.5}
                     strokeDasharray="5 5"
                     ifOverflow="extendDomain"
@@ -143,7 +151,7 @@ export default function NutritionChart({
 
                 <Bar
                   dataKey="value"
-                  fill="#81947B"
+                  fill="#25D366"
                   radius={[5, 5, 0, 0]}
                   maxBarSize={42}
                 />
@@ -154,20 +162,24 @@ export default function NutritionChart({
           </div>
 
           <div className="mt-4 flex flex-wrap
-            justify-center gap-5
-            text-xs text-muted">
+            justify-center gap-5 text-xs text-muted">
 
             <span className="flex items-center gap-2">
-              <span className="h-3 w-3 rounded
-                bg-[#81947B]" />
+
+              <span className="h-3 w-3 rounded bg-primary" />
+
               Recorded intake / daily average
+
             </span>
 
             {target > 0 && (
               <span className="flex items-center gap-2">
+
                 <span className="w-5 border-t-2
-                  border-dashed border-primary" />
+                  border-dashed border-muted" />
+
                 Current target
+
               </span>
             )}
 

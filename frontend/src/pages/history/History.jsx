@@ -72,7 +72,7 @@ function History() {
   }
 
   return (
-    <>
+    <div className="min-w-0">
 
       <PageHeader
         title="History"
@@ -94,7 +94,7 @@ function History() {
 
       ) : (
 
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-5 sm:space-y-6">
 
           {/* Calendar */}
 
@@ -112,26 +112,43 @@ function History() {
 
           {/* Selected date */}
 
-          <div className="flex flex-wrap
-            items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center
+            justify-between gap-3 rounded-2xl
+            border border-border bg-card p-4">
 
-            <div className="flex items-center gap-2">
+            <div className="flex min-w-0
+              items-center gap-3">
 
-              <CalendarDays
-                size={20}
-                className="text-primary"
-              />
+              <div className="flex h-10 w-10 shrink-0
+                items-center justify-center
+                rounded-xl bg-primary/10">
 
-              <h2 className="font-heading
-                font-bold text-lg text-primary">
+                <CalendarDays
+                  size={20}
+                  className="text-primary"
+                />
 
-                {getFormattedDate(selectedDate)}
+              </div>
 
-                {", "}
+              <div className="min-w-0">
 
-                {selectedDate.slice(0, 4)}
+                <p className="text-xs text-muted">
+                  Selected date
+                </p>
 
-              </h2>
+                <h2 className="mt-0.5 font-heading
+                  text-base font-bold text-foreground
+                  sm:text-lg">
+
+                  {getFormattedDate(selectedDate)}
+
+                  {", "}
+
+                  {selectedDate.slice(0, 4)}
+
+                </h2>
+
+              </div>
 
             </div>
 
@@ -139,13 +156,19 @@ function History() {
 
               <button
                 type="button"
+                aria-pressed={editing}
                 onClick={() =>
                   setEditing(previous => !previous)
                 }
-                className="flex items-center gap-2
-                  rounded-xl border border-border
-                  bg-card px-3 py-2
-                  text-sm font-medium text-primary"
+                className={`inline-flex shrink-0
+                  items-center justify-center gap-2
+                  rounded-xl border px-4 py-2.5
+                  text-sm font-semibold
+                  transition-colors ${
+                    editing
+                      ? "border-border bg-surface text-muted hover:text-foreground"
+                      : "border-primary/20 bg-primary/10 text-primary hover:bg-primary/20"
+                  }`}
               >
 
                 {editing ? (
@@ -205,7 +228,7 @@ function History() {
 
       )}
 
-    </>
+    </div>
   );
 }
 

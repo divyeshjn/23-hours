@@ -93,12 +93,15 @@ function HabitModal({
   `;
 
   return (
-    <div className="fixed inset-0 z-60
-      bg-black/30 backdrop-blur-sm
+    <div className="fixed inset-0 z-100
+      bg-black/75 backdrop-blur-sm
       flex items-end sm:items-center justify-center">
 
-      <div className="bg-white w-full sm:max-w-md
-        rounded-t-3xl sm:rounded-3xl p-6
+      <div className="bg-card border border-border w-full sm:max-w-md
+        rounded-t-3xl sm:rounded-3xl
+        px-6 pt-6
+        pb-[calc(24px+env(safe-area-inset-bottom,0px))]
+        sm:pb-6
         max-h-[90dvh] overflow-y-auto">
 
         <div className="flex justify-between
@@ -287,7 +290,7 @@ function HabitModal({
           {error && (
             <p
               role="alert"
-              className="text-sm text-red-600"
+              className="text-sm text-red-400"
             >
               {error}
             </p>
@@ -298,7 +301,7 @@ function HabitModal({
           <button
             disabled={disabled}
             type="submit"
-            className="bg-primary text-white
+            className="bg-primary text-background
               py-3.5 rounded-xl font-semibold
               disabled:opacity-50"
           >

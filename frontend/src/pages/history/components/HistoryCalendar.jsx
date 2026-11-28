@@ -135,7 +135,7 @@ export default function HistoryCalendar({
                     : isFuture
                       ? "text-muted/40 cursor-not-allowed"
                       : isRecorded
-                        ? "bg-sage/25 text-primary"
+                        ? "bg-primary/15 text-primary"
                         : "text-primary hover:bg-background"
                 }
 
@@ -175,7 +175,7 @@ export default function HistoryCalendar({
 
         <span className="flex items-center gap-2">
           <span className="h-3 w-3
-            rounded bg-sage/40" />
+            rounded bg-primary/30" />
           Recorded
         </span>
 

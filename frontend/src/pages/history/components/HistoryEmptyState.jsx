@@ -12,7 +12,7 @@ export default function HistoryEmptyState({
 
       <div className="mx-auto flex h-16 w-16
         items-center justify-center
-        rounded-2xl bg-sage/20">
+        rounded-2xl bg-primary/10">
 
         <CalendarDays
           size={30}

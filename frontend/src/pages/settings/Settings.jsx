@@ -1,6 +1,9 @@
+import { AlertCircle } from "lucide-react";
+
 import PageHeader from "../../components/common/PageHeader";
 
 import useSettings from "../../hooks/useSettings";
+
 import SecuritySettings from "./components/SecuritySettings";
 import HabitManager from "./components/HabitManager";
 import NutritionSettings from "./components/NutritionSettings";
@@ -17,21 +20,37 @@ function Settings() {
   } = useSettings();
 
   return (
-    <>
+    <div className="min-w-0">
+
       <PageHeader
         title="Settings"
         subtitle="Make 23 Hours your own"
       />
 
-      <div className="flex flex-col gap-6">
+      <div className="flex min-w-0 flex-col
+        gap-5 sm:gap-6">
 
         {error && (
-          <p
+
+          <div
             role="alert"
-            className="text-sm text-red-600 bg-red-50 rounded-xl p-3"
+            className="flex items-start gap-3
+              rounded-xl border border-danger/20
+              bg-danger/10 p-4
+              text-sm text-red-400"
           >
-            {error}
-          </p>
+
+            <AlertCircle
+              size={19}
+              className="mt-0.5 shrink-0"
+            />
+
+            <p className="min-w-0 break-words">
+              {error}
+            </p>
+
+          </div>
+
         )}
 
         <NutritionSettings
@@ -51,7 +70,8 @@ function Settings() {
         <SecuritySettings />
 
       </div>
-    </>
+
+    </div>
   );
 }
 

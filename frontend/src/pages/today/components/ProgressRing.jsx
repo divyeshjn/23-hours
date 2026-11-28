@@ -39,7 +39,7 @@ function ProgressRing({
             cy="75"
             r={radius}
             fill="none"
-            stroke="#F0F0EB"
+            stroke="var(--color-border)"
             strokeWidth="10"
           />
 

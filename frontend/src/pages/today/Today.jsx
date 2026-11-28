@@ -1,25 +1,30 @@
 import { useState } from "react";
+import { AlertCircle } from "lucide-react";
 
 import PageHeader from "../../components/common/PageHeader";
 import LoadingState from "../../components/common/LoadingState";
 import ErrorState from "../../components/common/ErrorState";
+import WeeklyCheckInReminder from "../../components/common/WeeklyCheckInReminder";
 
 import NutritionOverview from "./components/NutritionOverview";
 import MealSection from "./components/MealSection";
 import MealModal from "./components/MealModal";
-
 import EssentialsSection from "./components/EssentialsSection";
 import WaterTracker from "./components/WaterTracker";
 import WorkoutCard from "./components/WorkoutCard";
 import ExtrasSection from "./components/ExtrasSection";
-import WeeklyCheckInReminder from "../../components/common/WeeklyCheckInReminder";
+
 import useDailyLog from "./hooks/useDailyLog";
 import useSettings from "../../hooks/useSettings";
 import useTodayDate from "../../hooks/useTodayDate";
 
 import { getFormattedDate } from "../../utils/date";
 
-export function DailyDashboard({ date, isHistory=false, onLogUpdated }) {
+export function DailyDashboard({
+  date,
+  isHistory = false,
+  onLogUpdated
+}) {
   const [selectedMeal, setSelectedMeal] = useState(null);
 
   const { settings } = useSettings();
@@ -68,6 +73,7 @@ export function DailyDashboard({ date, isHistory=false, onLogUpdated }) {
     if (success) {
       setSelectedMeal(null);
     }
+
     return success;
   }
 
@@ -81,6 +87,7 @@ export function DailyDashboard({ date, isHistory=false, onLogUpdated }) {
     if (success) {
       setSelectedMeal(null);
     }
+
     return success;
   }
 
@@ -110,7 +117,8 @@ export function DailyDashboard({ date, isHistory=false, onLogUpdated }) {
   }
 
   return (
-    <>
+    <div className="min-w-0">
+
       {!isHistory && (
         <PageHeader
           title="Today"
@@ -121,16 +129,30 @@ export function DailyDashboard({ date, isHistory=false, onLogUpdated }) {
       {/* API error message */}
 
       {error && (
+
         <div
           role="alert"
-          className="bg-red-50 border border-red-100
-          text-red-600 text-sm p-3 rounded-xl mb-5"
+          className="mb-5 flex items-start gap-3
+            rounded-xl border border-danger/20
+            bg-danger/10 p-4 text-sm text-red-400"
         >
-          {error}
+
+          <AlertCircle
+            size={19}
+            className="mt-0.5 shrink-0"
+          />
+
+          <p className="min-w-0 break-words">
+            {error}
+          </p>
+
         </div>
+
       )}
 
-      <div className="flex flex-col gap-7">
+      <div className="flex min-w-0 flex-col gap-5 sm:gap-7">
+
+        {/* Weekly check-in reminder */}
 
         {!isHistory && <WeeklyCheckInReminder />}
 
@@ -141,11 +163,28 @@ export function DailyDashboard({ date, isHistory=false, onLogUpdated }) {
           targets={settings.targets}
         />
 
+        {/* Unknown nutrition information */}
+
         {hasUnknownNutrition && (
-          <p className="text-xs text-muted">
-            Some logged items have unknown nutritional
-            values. Totals include known values only.
-          </p>
+
+          <div className="flex items-start gap-2
+            rounded-xl border border-amber-500/15
+            bg-amber-500/5 px-4 py-3">
+
+            <AlertCircle
+              size={16}
+              className="mt-0.5 shrink-0 text-amber-400"
+            />
+
+            <p className="text-xs leading-relaxed text-muted">
+
+              Some logged items have unknown nutritional
+              values. Totals include known values only.
+
+            </p>
+
+          </div>
+
         )}
 
         {/* Daily meals */}
@@ -165,8 +204,8 @@ export function DailyDashboard({ date, isHistory=false, onLogUpdated }) {
 
         {/* Water and workout */}
 
-        <div className="grid grid-cols-1
-          lg:grid-cols-2 gap-5">
+        <div className="grid min-w-0 grid-cols-1
+          gap-5 lg:grid-cols-2">
 
           <WaterTracker
             water={water}
@@ -194,6 +233,7 @@ export function DailyDashboard({ date, isHistory=false, onLogUpdated }) {
       {/* Meal modal */}
 
       {selectedMeal && (
+
         <MealModal
           key={selectedMeal.id}
           meal={selectedMeal}
@@ -202,9 +242,10 @@ export function DailyDashboard({ date, isHistory=false, onLogUpdated }) {
           onSave={handleSave}
           onDelete={handleDelete}
         />
+
       )}
 
-    </>
+    </div>
   );
 }
 

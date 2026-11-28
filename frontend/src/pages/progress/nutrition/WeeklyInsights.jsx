@@ -115,7 +115,7 @@ export default function WeeklyInsights({
             <Info
               size={17}
               className="mt-0.5 shrink-0
-                text-[#81947B]"
+                text-primary"
             />
 
             <p className="text-sm leading-relaxed

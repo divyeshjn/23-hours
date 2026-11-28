@@ -10,19 +10,14 @@ import {
   Tooltip
 } from "recharts";
 
-import {
-  Ruler
-} from "lucide-react";
+import { Ruler } from "lucide-react";
 
-import {
-  formatChange
-} from "../../../utils/bodyProgress";
+import { formatChange } from "../../../utils/bodyProgress";
 
 export default function MeasurementChart({
   measurements,
   unit
 }) {
-
   const [selected, setSelected] = useState("waist");
 
   const measurement = measurements.find(
@@ -32,22 +27,19 @@ export default function MeasurementChart({
   const history = measurement?.history || [];
 
   return (
+    <section className="rounded-2xl border border-border bg-card p-4 sm:p-6">
 
-    <section className="rounded-2xl border
-      border-border bg-card p-4 sm:p-6">
-
-      <div className="flex flex-wrap
-        items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
 
         <div className="flex items-center gap-2">
 
-          <Ruler size={20} />
+          <Ruler
+            size={20}
+            className="text-primary"
+          />
 
-          <h2 className="font-heading
-            font-bold text-lg">
-
+          <h2 className="font-heading font-bold text-lg text-foreground">
             Body measurements
-
           </h2>
 
         </div>
@@ -58,19 +50,18 @@ export default function MeasurementChart({
             setSelected(event.target.value)
           }
           className="rounded-xl border border-border
-          bg-background px-3 py-2 text-sm
-          text-primary outline-none"
+            bg-surface px-3 py-2 text-sm
+            text-primary outline-none
+            focus:border-primary transition-colors"
         >
 
           {measurements.map(item => (
-
             <option
               key={item.key}
               value={item.key}
             >
               {item.label}
             </option>
-
           ))}
 
         </select>
@@ -79,14 +70,13 @@ export default function MeasurementChart({
 
       <div className="mt-5 grid grid-cols-3 gap-2">
 
-        <div>
+        <div className="rounded-xl bg-surface border border-border p-3">
 
           <p className="text-xs text-muted">
             Starting
           </p>
 
-          <p className="mt-1 font-heading
-            text-lg font-bold">
+          <p className="mt-1 font-heading text-lg font-bold text-foreground">
 
             {measurement?.initial == null
               ? "—"
@@ -96,14 +86,13 @@ export default function MeasurementChart({
 
         </div>
 
-        <div>
+        <div className="rounded-xl bg-surface border border-border p-3">
 
           <p className="text-xs text-muted">
             Latest
           </p>
 
-          <p className="mt-1 font-heading
-            text-lg font-bold">
+          <p className="mt-1 font-heading text-lg font-bold text-primary">
 
             {measurement?.latest == null
               ? "—"
@@ -113,14 +102,13 @@ export default function MeasurementChart({
 
         </div>
 
-        <div>
+        <div className="rounded-xl bg-surface border border-border p-3">
 
           <p className="text-xs text-muted">
             Total change
           </p>
 
-          <p className="mt-1 font-heading
-            text-lg font-bold">
+          <p className="mt-1 font-heading text-lg font-bold text-foreground">
 
             {formatChange(
               measurement?.change,
@@ -135,8 +123,7 @@ export default function MeasurementChart({
 
       {!history.length ? (
 
-        <div className="py-12 text-center
-          text-sm text-muted">
+        <div className="py-12 text-center text-sm text-muted">
 
           No measurements recorded for{" "}
           {measurement?.label?.toLowerCase()}.
@@ -163,7 +150,7 @@ export default function MeasurementChart({
             >
 
               <CartesianGrid
-                stroke="#EAE7E1"
+                stroke="#292929"
                 strokeDasharray="4 4"
                 vertical={false}
               />
@@ -172,7 +159,7 @@ export default function MeasurementChart({
                 dataKey="label"
                 tick={{
                   fontSize: 11,
-                  fill: "#858780"
+                  fill: "#A0A0A0"
                 }}
                 axisLine={false}
                 tickLine={false}
@@ -186,7 +173,7 @@ export default function MeasurementChart({
                 ]}
                 tick={{
                   fontSize: 11,
-                  fill: "#858780"
+                  fill: "#A0A0A0"
                 }}
                 axisLine={false}
                 tickLine={false}
@@ -199,23 +186,42 @@ export default function MeasurementChart({
                 ]}
                 contentStyle={{
                   borderRadius: "12px",
-                  border: "1px solid #EAE7E1",
-                  background: "#FFFFFF",
-                  fontSize: "13px"
+                  border: "1px solid #353535",
+                  background: "#202020",
+                  fontSize: "13px",
+                  boxShadow: "0 4px 16px rgba(0,0,0,0.3)"
+                }}
+                labelStyle={{
+                  color: "#F5F5F5",
+                  fontWeight: 600,
+                  marginBottom: "4px"
+                }}
+                itemStyle={{
+                  color: "#25D366"
+                }}
+                cursor={{
+                  stroke: "#555555",
+                  strokeDasharray: "4 4"
                 }}
               />
 
               <Line
                 type="linear"
                 dataKey="value"
-                stroke="#354F40"
+                stroke="#25D366"
                 strokeWidth={2.5}
                 dot={{
                   r: 4,
-                  fill: "#354F40",
-                  strokeWidth: 0
+                  fill: "#25D366",
+                  stroke: "#161616",
+                  strokeWidth: 2
                 }}
-                activeDot={{ r: 6 }}
+                activeDot={{
+                  r: 6,
+                  fill: "#25D366",
+                  stroke: "#161616",
+                  strokeWidth: 2
+                }}
               />
 
             </LineChart>
@@ -228,8 +234,7 @@ export default function MeasurementChart({
 
       {history.length === 1 && (
 
-        <p className="mt-3 text-center
-          text-xs text-muted">
+        <p className="mt-3 text-center text-xs text-muted">
 
           At least two measurements are
           needed to calculate a change.
@@ -239,6 +244,5 @@ export default function MeasurementChart({
       )}
 
     </section>
-
   );
 }

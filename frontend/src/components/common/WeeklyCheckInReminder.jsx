@@ -89,57 +89,71 @@ export default function WeeklyCheckInReminder() {
   return (
 
     <div className="relative rounded-2xl border
-      border-amber-500/20 bg-amber-500/5 p-4">
+      border-amber-500/20 bg-amber-500/5
+      p-4 sm:p-5">
 
       <button
         type="button"
         onClick={dismissReminder}
         aria-label="Dismiss reminder for today"
         className="absolute right-3 top-3
-          text-gray-500"
+          flex h-8 w-8 items-center justify-center
+          rounded-lg text-muted
+          transition-colors hover:bg-surface
+          hover:text-foreground"
       >
         <X size={18} />
       </button>
 
       <div className="flex items-start gap-3">
 
-        <div className="rounded-xl
-          bg-amber-500/10 p-3 text-amber-600">
+        <div className="flex h-12 w-12 shrink-0
+          items-center justify-center rounded-xl
+          bg-amber-500/10 text-amber-400">
 
-          <CalendarClock size={22} />
+          <CalendarClock size={23} />
 
         </div>
 
-        <div className="flex-1 pr-5">
+        <div className="min-w-0 flex-1 pr-6">
 
-          <h3 className="font-semibold">
+          <h3 className="font-heading font-bold
+            text-foreground">
             Weekly check-in is due
           </h3>
 
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1.5 text-sm
+            leading-relaxed text-muted">
+
             Record your weight and body measurements
             to track your weekly progress.
+
           </p>
 
         </div>
 
       </div>
 
-      <div className="mt-4 flex justify-end gap-3">
+      <div className="mt-4 flex flex-wrap
+        justify-end gap-3">
 
         <button
           type="button"
           onClick={dismissReminder}
-          className="rounded-lg px-4 py-2
-            text-sm text-gray-500"
+          className="rounded-xl px-4 py-2.5
+            text-sm font-medium text-muted
+            transition-colors hover:bg-surface
+            hover:text-foreground"
         >
           Later
         </button>
 
         <Link
           to="/weekly-checkin"
-          className="rounded-lg bg-emerald-600
-            px-4 py-2 text-sm font-medium text-white"
+          className="rounded-xl bg-primary
+            px-4 py-2.5 text-sm font-bold
+            text-background transition-opacity
+            hover:opacity-90"
         >
           Check in now
         </Link>

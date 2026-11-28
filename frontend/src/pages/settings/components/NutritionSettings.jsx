@@ -1,5 +1,12 @@
 import { useState, useRef } from "react";
 
+import {
+  CheckCircle2,
+  AlertCircle,
+  LoaderCircle,
+  Save
+} from "lucide-react";
+
 import Card from "../../../components/common/Card";
 
 function NutritionSettings({ targets, onSave, saving }) {
@@ -79,9 +86,20 @@ function NutritionSettings({ targets, onSave, saving }) {
   return (
     <Card>
 
-      <h2 className="text-lg font-bold mb-5">
-        Daily targets
-      </h2>
+      <div className="mb-6">
+
+        <h2 className="font-heading text-lg
+          font-bold text-foreground">
+
+          Daily targets
+
+        </h2>
+
+        <p className="mt-1 text-xs text-muted">
+          Manage your daily nutrition and hydration goals
+        </p>
+
+      </div>
 
       <form
         onSubmit={handleSubmit}
@@ -89,17 +107,24 @@ function NutritionSettings({ targets, onSave, saving }) {
       >
 
         {fields.map(field => (
+
           <label
             key={field.key}
             className="flex items-center
-              justify-between gap-3"
+              justify-between gap-3
+              rounded-xl border border-border
+              bg-surface/50 p-3 sm:p-4"
           >
 
-            <span className="text-sm font-medium">
+            <span className="text-sm font-medium
+              text-foreground">
+
               {field.label}
+
             </span>
 
-            <div className="flex items-center gap-2">
+            <div className="flex shrink-0
+              items-center gap-2">
 
               <input
                 disabled={saving}
@@ -107,6 +132,7 @@ function NutritionSettings({ targets, onSave, saving }) {
                 type="number"
                 min="1"
                 step="any"
+                inputMode="decimal"
                 value={form[field.key]}
                 onChange={e => {
                   setForm(previous => ({
@@ -117,42 +143,115 @@ function NutritionSettings({ targets, onSave, saving }) {
                   setSaved(false);
                   setError("");
                 }}
-                className="w-24 sm:w-32 p-2.5
+                className="w-24 sm:w-32
                   rounded-xl border border-border
-                  outline-none focus:border-sage
-                  disabled:opacity-50"
+                  bg-surface px-3 py-3
+                  text-right font-semibold
+                  tabular-nums text-foreground
+                  outline-none transition-colors
+                  focus:border-primary
+                  focus:ring-2 focus:ring-primary/10
+                  disabled:opacity-50
+                  [appearance:textfield]
+                  [&::-webkit-inner-spin-button]:appearance-none
+                  [&::-webkit-outer-spin-button]:appearance-none"
               />
 
-              <span className="text-xs text-muted w-8">
+              <span className="w-8 text-xs
+                font-medium text-muted">
+
                 {field.unit}
+
               </span>
 
             </div>
 
           </label>
+
         ))}
 
         {error && (
-          <p
+
+          <div
             role="alert"
-            className="text-sm text-red-600"
+            className="flex items-start gap-2
+              rounded-xl border border-danger/20
+              bg-danger/10 p-3
+              text-sm text-red-400"
           >
-            {error}
-          </p>
+
+            <AlertCircle
+              size={18}
+              className="mt-0.5 shrink-0"
+            />
+
+            <p>{error}</p>
+
+          </div>
+
+        )}
+
+        {saved && !error && (
+
+          <div
+            role="status"
+            className="flex items-center gap-2
+              rounded-xl border border-primary/20
+              bg-primary/10 p-3
+              text-sm text-primary"
+          >
+
+            <CheckCircle2
+              size={18}
+              className="shrink-0"
+            />
+
+            Your daily targets have been updated.
+
+          </div>
+
         )}
 
         <button
           disabled={saving}
           type="submit"
-          className="bg-primary text-white
-            rounded-xl py-3 font-semibold mt-2
+          className="mt-2 flex w-full
+            items-center justify-center gap-2
+            rounded-xl bg-primary px-4 py-3.5
+            text-sm font-bold text-background
+            transition-opacity hover:opacity-90
             disabled:opacity-50"
         >
-          {saving
-            ? "Please wait..."
-            : saved
-              ? "Targets saved"
-              : "Save targets"}
+
+          {saving ? (
+
+            <>
+              <LoaderCircle
+                size={18}
+                className="animate-spin"
+              />
+
+              Please wait...
+            </>
+
+          ) : saved ? (
+
+            <>
+              <CheckCircle2 size={18} />
+
+              Targets saved
+            </>
+
+          ) : (
+
+            <>
+              <Save size={18} />
+
+              Save targets
+            </>
+
+          )}
+
         </button>
 
       </form>

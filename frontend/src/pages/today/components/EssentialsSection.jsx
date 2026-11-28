@@ -50,7 +50,7 @@ function EssentialsSection({
         rounded-full overflow-hidden mb-5">
 
         <div
-          className="h-full bg-sage rounded-full
+          className="h-full bg-primary rounded-full
             transition-all duration-300"
           style={{ width: `${percentage}%` }}
         />
@@ -115,8 +115,8 @@ function EssentialsSection({
                 border flex items-center justify-center
                 transition-colors shrink-0
                 ${logged
-                  ? "bg-primary border-primary text-white"
-                  : "border-sage"}`}>
+                  ? "bg-primary border-primary text-background"
+                  : "border-muted"}`}>
 
                 {logged && <Check size={15} />}
 

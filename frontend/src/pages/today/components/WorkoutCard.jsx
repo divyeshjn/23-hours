@@ -38,7 +38,7 @@ function WorkoutCard({ workout, onChange }) {
 
         <div className="flex items-center gap-3">
 
-          <div className="bg-sage/20 p-3 rounded-xl">
+          <div className="bg-primary/10 text-primary p-3 rounded-xl">
             <Dumbbell size={23} />
           </div>
 
@@ -66,8 +66,8 @@ function WorkoutCard({ workout, onChange }) {
           className={`w-7 h-7 rounded-lg border
             flex items-center justify-center
             ${workout.completed
-              ? "bg-primary border-primary text-white"
-              : "border-sage"}`}
+              ? "bg-primary border-primary text-background"
+              : "border-muted"}`}
         >
           {workout.completed && <Check size={17} />}
         </button>
@@ -84,7 +84,7 @@ function WorkoutCard({ workout, onChange }) {
           })}
           className={`rounded-xl py-2.5 text-sm
             ${!workout.restDay
-              ? "bg-sage/30"
+              ? "bg-primary/15 text-primary"
               : "bg-background text-muted"}`}
         >
           Training day
@@ -99,7 +99,7 @@ function WorkoutCard({ workout, onChange }) {
           })}
           className={`rounded-xl py-2.5 text-sm
             ${workout.restDay
-              ? "bg-sage/30"
+              ? "bg-primary/10 text-primary"
               : "bg-background text-muted"}`}
         >
           Rest day
@@ -117,7 +117,7 @@ function WorkoutCard({ workout, onChange }) {
             placeholder="What did you train today?"
             className="w-full min-h-24 p-3
               rounded-xl border border-border
-              outline-none focus:border-sage
+              outline-none focus:border-primary
               resize-none text-sm"
           />
 
@@ -137,7 +137,7 @@ function WorkoutCard({ workout, onChange }) {
               placeholder="60"
               className="w-24 p-2.5 border
                 border-border rounded-xl
-                outline-none focus:border-sage"
+                outline-none focus:border-primary"
             />
 
           </label>
@@ -158,7 +158,7 @@ function WorkoutCard({ workout, onChange }) {
         </p>
       )}
 
-      {error && <p role="alert" className="mt-3 text-sm text-red-600">{error}</p>}
+      {error && <p role="alert" className="mt-3 text-sm text-red-400">{error}</p>}
     </Card>
   );
 }

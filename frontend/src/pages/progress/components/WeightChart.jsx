@@ -8,33 +8,21 @@ import {
   Tooltip
 } from "recharts";
 
-import {
-  Scale
-} from "lucide-react";
+import { Scale } from "lucide-react";
 
-export default function WeightChart({
-  history
-}) {
-
+export default function WeightChart({ history }) {
   return (
-
-    <section className="rounded-2xl border
-      border-border bg-card p-4 sm:p-6">
+    <section className="rounded-2xl border border-border bg-card p-4 sm:p-6">
 
       <div className="flex items-center gap-2">
-
         <Scale
           size={20}
           className="text-primary"
         />
 
-        <h2 className="font-heading
-          font-bold text-lg">
-
+        <h2 className="font-heading font-bold text-lg text-foreground">
           Weight trend
-
         </h2>
-
       </div>
 
       <p className="mt-1 text-sm text-muted">
@@ -43,17 +31,13 @@ export default function WeightChart({
 
       {!history.length ? (
 
-        <div className="py-12 text-center
-          text-sm text-muted">
-
+        <div className="py-12 text-center text-sm text-muted">
           No weight measurements recorded yet.
-
         </div>
 
       ) : (
 
-        <div className="mt-6 h-64 w-full
-          min-w-0">
+        <div className="mt-6 h-64 w-full min-w-0">
 
           <ResponsiveContainer
             width="100%"
@@ -71,7 +55,6 @@ export default function WeightChart({
             >
 
               <defs>
-
                 <linearGradient
                   id="weightGradient"
                   x1="0"
@@ -79,25 +62,22 @@ export default function WeightChart({
                   x2="0"
                   y2="1"
                 >
-
                   <stop
                     offset="5%"
-                    stopColor="#A8BBA2"
-                    stopOpacity={0.5}
+                    stopColor="#25D366"
+                    stopOpacity={0.3}
                   />
 
                   <stop
                     offset="95%"
-                    stopColor="#A8BBA2"
-                    stopOpacity={0.03}
+                    stopColor="#25D366"
+                    stopOpacity={0.02}
                   />
-
                 </linearGradient>
-
               </defs>
 
               <CartesianGrid
-                stroke="#EAE7E1"
+                stroke="#292929"
                 strokeDasharray="4 4"
                 vertical={false}
               />
@@ -106,7 +86,7 @@ export default function WeightChart({
                 dataKey="label"
                 tick={{
                   fontSize: 11,
-                  fill: "#858780"
+                  fill: "#A0A0A0"
                 }}
                 axisLine={false}
                 tickLine={false}
@@ -120,7 +100,7 @@ export default function WeightChart({
                 ]}
                 tick={{
                   fontSize: 11,
-                  fill: "#858780"
+                  fill: "#A0A0A0"
                 }}
                 axisLine={false}
                 tickLine={false}
@@ -133,24 +113,43 @@ export default function WeightChart({
                 ]}
                 contentStyle={{
                   borderRadius: "12px",
-                  border: "1px solid #EAE7E1",
-                  background: "#FFFFFF",
-                  fontSize: "13px"
+                  border: "1px solid #353535",
+                  background: "#202020",
+                  fontSize: "13px",
+                  boxShadow: "0 4px 16px rgba(0,0,0,0.3)"
+                }}
+                labelStyle={{
+                  color: "#F5F5F5",
+                  fontWeight: 600,
+                  marginBottom: "4px"
+                }}
+                itemStyle={{
+                  color: "#25D366"
+                }}
+                cursor={{
+                  stroke: "#555555",
+                  strokeDasharray: "4 4"
                 }}
               />
 
               <Area
                 type="linear"
                 dataKey="value"
-                stroke="#354F40"
+                stroke="#25D366"
                 strokeWidth={2.5}
                 fill="url(#weightGradient)"
                 dot={{
                   r: 4,
-                  fill: "#354F40",
-                  strokeWidth: 0
+                  fill: "#25D366",
+                  stroke: "#161616",
+                  strokeWidth: 2
                 }}
-                activeDot={{ r: 6 }}
+                activeDot={{
+                  r: 6,
+                  fill: "#25D366",
+                  stroke: "#161616",
+                  strokeWidth: 2
+                }}
                 baseValue="dataMin"
               />
 
@@ -163,18 +162,12 @@ export default function WeightChart({
       )}
 
       {history.length === 1 && (
-
-        <p className="mt-3 text-center
-          text-xs text-muted">
-
+        <p className="mt-3 text-center text-xs text-muted">
           Record another weekly check-in
           to start seeing your trend.
-
         </p>
-
       )}
 
     </section>
-
   );
 }

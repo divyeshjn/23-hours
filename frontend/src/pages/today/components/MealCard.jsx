@@ -20,13 +20,13 @@ function MealCard({ meal, entry, onClick }) {
       type="button"
       onClick={onClick}
       className="w-full flex items-center gap-4
-        bg-white border border-border rounded-2xl
-        p-4 text-left hover:border-sage
+        bg-card border border-border rounded-2xl
+        p-4 text-left hover:border-primary/50
         transition-all"
     >
 
       <div className="w-14 h-14 shrink-0
-        bg-sage/20 rounded-2xl
+        bg-primary/10 text-primary rounded-2xl
         flex items-center justify-center">
 
         <Icon size={25} strokeWidth={1.7} />
@@ -57,7 +57,7 @@ function MealCard({ meal, entry, onClick }) {
 
       </div>
 
-      <div className="bg-background p-3 rounded-xl">
+      <div className="bg-surface text-muted p-3 rounded-xl">
         {entry ? (
           <Pencil size={19} strokeWidth={1.8} />
         ) : (
