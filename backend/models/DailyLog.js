@@ -15,10 +15,6 @@ const mealSchema = new mongoose.Schema(
       type: Number,
       min: 0,
       default: null
-    },
-    imageUrl: {
-      type: String,
-      default: null
     }
   },
   { _id: false }
@@ -76,10 +72,6 @@ const extraSchema = new mongoose.Schema(
     protein: {
       type: Number,
       min: 0,
-      default: null
-    },
-    imageUrl: {
-      type: String,
       default: null
     }
   },

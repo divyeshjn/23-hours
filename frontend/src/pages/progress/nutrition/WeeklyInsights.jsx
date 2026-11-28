@@ -12,7 +12,7 @@ export default function WeeklyInsights({
   if (summary.nutritionDays < summary.elapsedDays) {
     insights.push(
       "Some days have no recorded nutrition. " +
-      "Weekly averages may not represent your full intake."
+      "Recorded averages may not represent your full intake."
     );
   }
 
@@ -76,7 +76,7 @@ export default function WeeklyInsights({
   if (summary.workoutDays > 0) {
     insights.push(
       `You recorded ${summary.workoutDays} workout(s) ` +
-      "this week. Maintain adequate nutrition and recovery."
+      "during this period. Maintain adequate nutrition and recovery."
     );
   }
 
@@ -93,7 +93,7 @@ export default function WeeklyInsights({
 
         <h2 className="font-heading
           font-bold text-lg">
-          Weekly insights
+          Nutrition insights
         </h2>
 
       </div>

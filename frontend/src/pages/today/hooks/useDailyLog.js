@@ -39,7 +39,7 @@ function normaliseLog(data) {
   };
 }
 
-export default function useDailyLog(date) {
+export default function useDailyLog(date, onLogUpdated) {
   const [log, setLog] = useState(EMPTY_LOG);
 
   const [loading, setLoading] = useState(true);
@@ -108,7 +108,7 @@ export default function useDailyLog(date) {
         const data = await operation();
 
         applyLog(data);
-
+        onLogUpdated?.(data);
         return true;
 
       } catch (error) {

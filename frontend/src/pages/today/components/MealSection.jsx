@@ -1,7 +1,7 @@
 import { MEAL_TYPES } from "../../../constants/nutrition";
 import MealCard from "./MealCard";
 
-function MealSection({ meals, onSelectMeal }) {
+function MealSection({ meals = {}, onSelectMeal }) {
   return (
     <section>
 
@@ -12,7 +12,8 @@ function MealSection({ meals, onSelectMeal }) {
         </h2>
 
         <span className="text-xs text-muted">
-          {MEAL_TYPES.filter(meal => meals[meal.id]).length}/3 logged
+          {MEAL_TYPES.filter(meal => meals[meal.id]).length}/
+          {MEAL_TYPES.length} logged
         </span>
 
       </div>

@@ -19,7 +19,7 @@ import useTodayDate from "../../hooks/useTodayDate";
 
 import { getFormattedDate } from "../../utils/date";
 
-function DailyDashboard({ date }) {
+export function DailyDashboard({ date, isHistory=false, onLogUpdated }) {
   const [selectedMeal, setSelectedMeal] = useState(null);
 
   const { settings } = useSettings();
@@ -32,13 +32,10 @@ function DailyDashboard({ date }) {
     workout,
     extras,
     hasUnknownNutrition,
-
     loading,
-    saving,
     error,
     ready,
     loadLog,
-
     saveMeal,
     deleteMeal,
     toggleHabit,
@@ -46,7 +43,7 @@ function DailyDashboard({ date }) {
     updateWorkout,
     saveExtra,
     deleteExtra
-  } = useDailyLog(date);
+  } = useDailyLog(date, onLogUpdated);
 
   // Keep completed habits visible even if their
   // templates have subsequently been deleted.
@@ -92,7 +89,11 @@ function DailyDashboard({ date }) {
   if (loading) {
     return (
       <LoadingState
-        message="Loading today's nutrition..."
+        message={
+          isHistory
+            ? "Loading daily record..."
+            : "Loading today's nutrition..."
+        }
       />
     );
   }
@@ -110,26 +111,12 @@ function DailyDashboard({ date }) {
 
   return (
     <>
-      <PageHeader
-        title="Today"
-        subtitle={getFormattedDate(date)}
-      />
-
-      {/* Saving indicator */}
-
-      {/* <div className="flex justify-end items-center min-h-5 mb-3">
-
-        {saving ? (
-          <span className="text-xs text-muted">
-            Saving changes...
-          </span>
-        ) : !error ? (
-          <span className="text-xs text-[#81947B]">
-            All changes saved
-          </span>
-        ) : null}
-
-      </div> */}
+      {!isHistory && (
+        <PageHeader
+          title="Today"
+          subtitle={getFormattedDate(date)}
+        />
+      )}
 
       {/* API error message */}
 
@@ -145,7 +132,7 @@ function DailyDashboard({ date }) {
 
       <div className="flex flex-col gap-7">
 
-        <WeeklyCheckInReminder />
+        {!isHistory && <WeeklyCheckInReminder />}
 
         {/* Nutrition overview */}
 

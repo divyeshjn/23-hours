@@ -1,10 +1,7 @@
+import { getTodayKey } from "./date";
+
 export function getTodayIST() {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Kolkata",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit"
-  }).format(new Date());
+  return getTodayKey();
 }
 
 export function addDays(date, days) {
@@ -64,14 +61,18 @@ function getRecordedTotal(entries, field) {
   );
 }
 
-export function buildWeeklyData(logs, weekStart) {
+export function buildWeeklyData(
+  logs,
+  weekStart,
+  endDate = addDays(weekStart, 6)
+) {
   const logMap = new Map(
     logs.map(log => [log.date, log])
   );
 
   const today = getTodayIST();
 
-  return getWeekDates(weekStart).map(date => {
+  return getDateRange(weekStart, endDate).map(date => {
     const log = logMap.get(date);
 
     const entries = getFoodEntries(log);
@@ -180,4 +181,135 @@ export function getTargetDays(days, field, target) {
 
     recorded: recorded.length
   };
+}
+
+export function getDateRange(start, end) {
+  const dates = [];
+
+  for (
+    let date = start;
+    date <= end;
+    date = addDays(date, 1)
+  ) {
+    dates.push(date);
+  }
+
+  return dates;
+}
+
+export function getPeriodStart(
+  period,
+  date = getTodayIST()
+) {
+  switch (period) {
+    case "week":
+      return getWeekStart(date);
+
+    case "month":
+      return `${date.slice(0, 7)}-01`;
+
+    case "year":
+      return `${date.slice(0, 4)}-01-01`;
+
+    default:
+      return date;
+  }
+}
+
+export function shiftPeriod(start, period, amount) {
+  if (period === "week") {
+    return addDays(start, amount * 7);
+  }
+
+  const date = new Date(`${start}T12:00:00Z`);
+
+  if (period === "month") {
+    date.setUTCMonth(date.getUTCMonth() + amount);
+  }
+
+  if (period === "year") {
+    date.setUTCFullYear(
+      date.getUTCFullYear() + amount
+    );
+  }
+
+  return date.toISOString().slice(0, 10);
+}
+
+export function getPeriodEnd(start, period) {
+  if (period === "all") {
+    return getTodayIST();
+  }
+
+  return addDays(
+    shiftPeriod(start, period, 1),
+    -1
+  );
+}
+
+export function formatPeriodLabel(
+  start,
+  end,
+  period
+) {
+  const date = new Date(`${start}T12:00:00Z`);
+
+  if (period === "all") {
+    return "All recorded history";
+  }
+
+  if (period === "year") {
+    return start.slice(0, 4);
+  }
+
+  if (period === "month") {
+    return date.toLocaleDateString("en-IN", {
+      month: "long",
+      year: "numeric",
+      timeZone: "Asia/Kolkata"
+    });
+  }
+
+  return `${formatShortDate(start)} ${start.slice(0, 4)} – ${formatShortDate(end)} ${end.slice(0, 4)}`;
+}
+
+export function aggregateChartData(days, period) {
+  if (period === "week" || period === "month") {
+    return days;
+  }
+
+  const groups = new Map();
+
+  for (const day of days) {
+    if (day.future) continue;
+
+    const month = day.date.slice(0, 7);
+
+    if (!groups.has(month)) {
+      groups.set(month, []);
+    }
+
+    groups.get(month).push(day);
+  }
+
+  return Array.from(groups, ([month, records]) => {
+    const summary = calculateWeeklySummary(records);
+
+    return {
+      date: `${month}-01`,
+
+      label: new Date(`${month}-01T12:00:00Z`)
+        .toLocaleDateString("en-IN", {
+          month: "short",
+          year: "2-digit",
+          timeZone: "Asia/Kolkata"
+        }),
+
+      calories: summary.averageCalories,
+      protein: summary.averageProtein,
+      water: summary.averageWater,
+
+      future: false
+    };
+  });
 }

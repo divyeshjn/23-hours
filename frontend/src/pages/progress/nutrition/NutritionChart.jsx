@@ -59,7 +59,7 @@ export default function NutritionChart({
       {!hasData ? (
         <div className="py-12 text-center
           text-sm text-muted">
-          No data recorded for this week.
+          No data recorded for this period.
         </div>
       ) : (
         <>
@@ -93,7 +93,8 @@ export default function NutritionChart({
                   }}
                   axisLine={false}
                   tickLine={false}
-                  interval={0}
+                  interval="preserveStartEnd"
+                  minTickGap={15} 
                 />
 
                 <YAxis
@@ -159,7 +160,7 @@ export default function NutritionChart({
             <span className="flex items-center gap-2">
               <span className="h-3 w-3 rounded
                 bg-[#81947B]" />
-              Recorded intake
+              Recorded intake / daily average
             </span>
 
             {target > 0 && (

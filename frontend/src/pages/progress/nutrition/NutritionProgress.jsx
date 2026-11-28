@@ -16,6 +16,7 @@ import WeeklyOverview from "./WeeklyOverview";
 import NutritionChart from "./NutritionChart";
 import TargetAdherence from "./TargetAdherence";
 import WeeklyInsights from "./WeeklyInsights";
+import PeriodComparison from "./PeriodComparison";
 
 export default function NutritionProgress() {
   const { settings } = useSettings();
@@ -23,21 +24,30 @@ export default function NutritionProgress() {
   const targets = settings?.targets || {};
 
   const {
+    period,
+    changePeriod,
+
+    startDate,
+    endDate,
+
     days,
+    chartData,
+
     summary,
+    previousSummary,
 
-    weekStart,
-    weekEnd,
-    isCurrentWeek,
-
-    previousWeek,
-    nextWeek,
-    resetWeek,
+    isCurrentPeriod,
+    previousPeriod,
+    nextPeriod,
+    resetPeriod,
 
     loading,
     error,
     refresh
   } = useWeeklyNutrition();
+
+  const isAggregated =
+    period === "year" || period === "all";
 
   if (loading) {
     return <LoadingState />;
@@ -56,22 +66,32 @@ export default function NutritionProgress() {
     <div className="space-y-5">
 
       <WeekSelector
-        weekStart={weekStart}
-        weekEnd={weekEnd}
-        isCurrentWeek={isCurrentWeek}
-        previousWeek={previousWeek}
-        nextWeek={nextWeek}
-        resetWeek={resetWeek}
+        period={period}
+        changePeriod={changePeriod}
+        startDate={startDate}
+        endDate={endDate}
+        isCurrentPeriod={isCurrentPeriod}
+        previousPeriod={previousPeriod}
+        nextPeriod={nextPeriod}
+        resetPeriod={resetPeriod}
       />
 
-      <WeeklyOverview
+      <WeeklyOverview summary={summary} />
+
+      <PeriodComparison
         summary={summary}
+        previousSummary={previousSummary}
+        period={period}
       />
 
       <NutritionChart
-        title="Daily calorie intake"
-        subtitle="Recorded calories throughout the week"
-        days={days}
+        title="Calorie trends"
+        subtitle={
+          isAggregated
+            ? "Average daily calories by month"
+            : "Recorded daily calorie intake"
+        }
+        days={chartData}
         metric="calories"
         target={targets.calories}
         unit="kcal"
@@ -79,9 +99,13 @@ export default function NutritionProgress() {
       />
 
       <NutritionChart
-        title="Daily protein intake"
-        subtitle="Protein intake and consistency"
-        days={days}
+        title="Protein trends"
+        subtitle={
+          isAggregated
+            ? "Average daily protein by month"
+            : "Recorded daily protein intake"
+        }
+        days={chartData}
         metric="protein"
         target={targets.protein}
         unit="g"
@@ -89,9 +113,13 @@ export default function NutritionProgress() {
       />
 
       <NutritionChart
-        title="Daily hydration"
-        subtitle="Recorded water consumption"
-        days={days}
+        title="Hydration trends"
+        subtitle={
+          isAggregated
+            ? "Average daily water intake by month"
+            : "Recorded daily water consumption"
+        }
+        days={chartData}
         metric="water"
         target={targets.water}
         unit="L"
@@ -109,15 +137,6 @@ export default function NutritionProgress() {
         summary={summary}
         targets={targets}
       />
-
-      <p className="text-center text-xs
-        leading-relaxed text-muted">
-
-        Analytics are based on recorded intake.
-        Missing values are excluded from averages.
-        Historical intake is compared with current targets.
-
-      </p>
 
     </div>
   );

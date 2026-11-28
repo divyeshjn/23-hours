@@ -143,8 +143,7 @@ export async function saveMeal(req, res, next) {
     const meal = pickFields(req.body, [
       "description",
       "calories",
-      "protein",
-      "imageUrl"
+      "protein"
     ]);
 
     validateNutrition(meal);
@@ -377,8 +376,7 @@ export async function createExtra(req, res, next) {
       "name",
       "quantity",
       "calories",
-      "protein",
-      "imageUrl"
+      "protein"
     ]);
 
     validateNutrition(extra);
@@ -415,8 +413,7 @@ export async function updateExtra(req, res, next) {
       "name",
       "quantity",
       "calories",
-      "protein",
-      "imageUrl"
+      "protein"
     ]);
 
     validateNutrition(extra);
