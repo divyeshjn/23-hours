@@ -43,7 +43,7 @@ export default function MeasurementInput({
             focus:border-primary
             focus:ring-2 focus:ring-primary/10
             transition-all duration-200
-            appearance-none
+            appearance:textfield
             [&::-webkit-inner-spin-button]:appearance-none
             [&::-webkit-outer-spin-button]:appearance-none
             [appearance:textfield]"

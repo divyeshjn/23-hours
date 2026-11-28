@@ -142,7 +142,7 @@ export function DailyDashboard({
             className="mt-0.5 shrink-0"
           />
 
-          <p className="min-w-0 break-words">
+          <p className="min-w-0 wrap-break-words">
             {error}
           </p>
 

@@ -69,7 +69,7 @@ export default function HistoryDaySummary({
 
           </div>
 
-          <p className={`mt-3 break-words
+          <p className={`mt-3 wrap-break-words
             font-heading text-lg sm:text-xl
             font-bold ${
               summary.workout === "Completed"

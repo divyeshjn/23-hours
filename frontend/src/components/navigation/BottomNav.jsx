@@ -29,7 +29,7 @@ function BottomNav() {
               className={({ isActive }) =>
                 `flex flex-col items-center
                  justify-center gap-1 flex-1
-                 h-full min-w-0 min-h-[52px]
+                 h-full min-w-0 min-h-13
                  transition-colors duration-200
                  ${
                    isActive

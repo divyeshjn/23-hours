@@ -40,7 +40,7 @@ export default function ProgressStat({
       <div className="mt-3 flex flex-wrap
         items-baseline gap-1.5">
 
-        <span className={`break-words font-heading
+        <span className={`wrap-break-words font-heading
           text-2xl font-bold tabular-nums
           sm:text-3xl ${
             hasValue

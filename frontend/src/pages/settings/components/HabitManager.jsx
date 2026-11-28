@@ -196,7 +196,7 @@ function HabitManager({
 
               <div className="min-w-0 flex-1">
 
-                <h3 className="break-words
+                <h3 className="wrap-break-words
                   text-sm font-semibold
                   text-foreground">
 
@@ -204,7 +204,7 @@ function HabitManager({
 
                 </h3>
 
-                <p className="mt-1 break-words
+                <p className="mt-1 wrap-break-words
                   text-xs text-muted">
 
                   {habit.quantity}

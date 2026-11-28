@@ -97,6 +97,7 @@ export default function NutritionChart({
                 />
 
                 <YAxis
+                  tickFormatter={value=>Number(Number(value).toFixed(2)).toString()}
                   domain={[
                     0,
                     max => Math.max(

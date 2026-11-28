@@ -131,7 +131,7 @@ function SecuritySettings() {
 
       {confirmLogout && (
 
-        <div className="fixed inset-0 z-[100]
+        <div className="fixed inset-0 z-100
           flex items-center justify-center
           bg-black/75 p-5 backdrop-blur-sm">
 

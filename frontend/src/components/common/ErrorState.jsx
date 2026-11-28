@@ -28,7 +28,7 @@ export default function ErrorState({
       </h3>
 
       <p className="mx-auto mt-2 max-w-sm
-        break-words text-sm leading-relaxed text-muted">
+        wrap-break-words text-sm leading-relaxed text-muted">
         {message}
       </p>
 
